@@ -32,6 +32,16 @@ forwarder (D5).
 - **One generative step**: `detect_pii_genai`, a tool wrapping a structured-
   output model call (`MODEL_PII_EXTRACTOR → MODEL → error`). The tool owns the
   provider call, so Claude/GPT/DeepSeek all route through the same schema.
+
+  *(Amendment 2026-08-08, Phase 3 build)*: the GenAI leg runs **host-side on
+  the direct path** (`pipeline/genai_detect.py`, per-chunk `messages.parse`
+  with code-enforced grounding — ungrounded findings dropped, bad spans
+  stripped). Rationale: a sandboxed model call needs a vault
+  `environment_variable` API-key credential, and this org authenticates with
+  short-lived OAuth profiles unfit for vaults. The scanner-thread-per-model
+  session design remains v2, gated on provisioning a real API key. Practical
+  consequence: `genai_only`/`presidio_genai` run on the direct path; the
+  session path carries the deterministic leg.
 - Deterministic sandbox scripts: `extract_text.py`, `chunk_text.py`,
   `presidio_scan.py`, `normalize_findings.py`, `assemble_result.py`.
 - Host-side custom tools (credentials stay out of the sandbox): `s3_put`,

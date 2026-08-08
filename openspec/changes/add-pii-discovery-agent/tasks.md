@@ -33,9 +33,10 @@
 - [x] Gate: L2 trajectory + schema evals green — verified on real sessions 2026-08-07: reject trajectory (`sesn_01PmKunz…`: clean bash trail, one persist) and full scan (`sesn_014W2bpr…`: correct step order, schema valid, all excerpts grounded, one persist), assertions replayed from archived event history. Clean-fixture Tier-1 FP run and the pytest-form rerun deferred to the Phase 3 budgeted round (owner credit constraint).
 
 ### Phase 3 — GenAI path + model switching
-- [ ] `detect_pii_genai` tool (structured output, provider-agnostic, `MODEL_PII_EXTRACTOR`)
-- [ ] `PII_ENGINE` switch + CI engine matrix
-- [ ] Per-model scanner fan-out; normalization merge with `source_model`
+- [x] GenAI extraction (`pipeline/genai_detect.py`: typed per-chunk `messages.parse`, `MODEL_PII_EXTRACTOR → MODEL → error`, code-enforced grounding) — host-side direct path per the D2 amendment; validated live 2026-08-08 with claude-haiku-4-5 on prose_01 (6/8 types, 0 spurious, all grounded)
+- [x] `PII_ENGINE` switch live across all three engines on the direct path; normalization merge carries `source_model`
+- [ ] Per-model scanner fan-out in sessions (v2 — needs a vault API-key credential)
+- [ ] CI engine matrix for L2 (blocked on budgeted L2-in-CI decision)
 - [ ] Gate: L2 P/R/F1 floors per model (rubrics §0); cross-model agreement reported
 
 ### Phase 4 — Observability

@@ -104,8 +104,10 @@ def test_second_scan_hits_cache_and_runs_nothing():
     assert second.run.scan_id == first.run.scan_id  # served from cache
 
 
-def test_genai_engines_fail_loudly_until_phase_3(tmp_path):
+def test_genai_engine_requires_model_env(tmp_path, monkeypatch):
+    monkeypatch.delenv("MODEL_PII_EXTRACTOR", raising=False)
+    monkeypatch.delenv("MODEL", raising=False)
     f = tmp_path / "x.txt"
-    f.write_text("hello world, nothing here")
-    with pytest.raises(RuntimeError, match="Phase 3"):
+    f.write_text("hello world, nothing here at all today")
+    with pytest.raises(RuntimeError, match="MODEL_PII_EXTRACTOR"):
         scan_document(f, user_login="t", engine="genai_only", conn=db.connect(":memory:"))

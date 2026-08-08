@@ -74,8 +74,8 @@ HARD eval failure):
 |---|---|---|
 | `bash` / `read` / `write` / `edit` / `glob` / `grep` | Sandbox toolset | The session workspace only; no network beyond `limited` allowlist |
 | `web_search` / `web_fetch` | Sandbox toolset | **Disabled** — an agent scanning untrusted documents has no business browsing |
-| `s3_get`, `cache_lookup`, `persist_result` | Custom, host-side | Executed by the client with its own credentials; the sandbox never holds cloud keys |
-| `detect_pii_genai` | Custom, host-side | The one model call; input is chunk text, output is schema-validated findings |
+| `cache_lookup`, `persist_result` | Custom, host-side | Executed by the client with its own credentials; the sandbox never holds cloud keys |
+| GenAI extraction (`pipeline/genai_detect.py`) | Host-side direct call | The one model call: typed per-chunk `messages.parse`, model from `MODEL_PII_EXTRACTOR`, grounding enforced in code (ungrounded findings dropped, bad spans stripped). Runs on the direct path — see the D2 amendment for why it is not in the sandbox |
 
 ## Agent-to-agent communication
 

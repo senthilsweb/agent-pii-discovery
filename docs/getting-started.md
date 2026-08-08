@@ -59,6 +59,26 @@ tool ran, and the scan row landed in the (gitignored) DuckDB at
 `[presidio]` extra; the corpus verifier is
 `python3 evals/corpus/verify.py`.
 
+The GenAI engine runs on the same direct path with a switchable model
+(authenticates via your `ant auth login` profile — no API key env var):
+
+```sh
+PII_ENGINE=genai_only MODEL_PII_EXTRACTOR=claude-haiku-4-5 \
+    .venv/bin/python -m pipeline.scan evals/data/synthetic_prose_01/document.txt --user senthil
+```
+
+```json
+{
+  "scan_id": "scan_98c698daaef2",
+  "status": "processed",
+  "findings": {
+    "DATE_OF_BIRTH": 1, "EMAIL_ADDRESS": 1, "GOVERNMENT_ID_SSN": 1,
+    "PERSON_NAME": 1, "PHONE_NUMBER": 1, "PHYSICAL_ADDRESS": 1
+  },
+  "jurisdictions": ["CCPA_CPRA", "DPDP_INDIA", "GDPR", "LGPD", "PDPL_ARGENTINA", "PIPEDA"]
+}
+```
+
 The Managed Agents session path and the GenAI engine arrive with Phases 2–3;
 each phase's exit gate is in the
 [openspec tasks](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/changes/add-pii-discovery-agent/tasks.md).
