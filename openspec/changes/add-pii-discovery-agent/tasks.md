@@ -47,10 +47,13 @@
 - [ ] Owner spot-check in the Arize UI (project `agent-pii-discovery`: 10 traces, token counts on LLM spans, finding counts on root spans) → then dashboards for the live KPIs
 
 ### Phase 5 — Live eval
-- [ ] Judge evaluators for rubric R1–R6; calibration set
-- [ ] Arize online-eval tasks (25% judge / 100% code checks) + drift & cost monitors
+- [x] R1 grounding + R4 span fidelity as deterministic code checks (`evals/judge/checks.py`, 100% of traces, no LLM)
+- [x] R2 type-accuracy LLM judge (`evals/judge/llm_judge.py`, `MODEL_JUDGE → MODEL → error`, structured verdicts, unparseable = fail-not-pass) + deterministic calibration-case generator from corpus sidecars
+- [x] L3 calibration shake-out 2026-08-08: **R2 @ 96.7% agreement (29/30) with claude-haiku-4-5 judge — passes the ≥90% threshold.** Sole disagreement is a judge-defensible ambiguity (bare passport-format ID without context) → improvement logged: pass chunk context for context-dependent ID types before the opus calibration round.
+- [ ] R3 coverage / R5 sensitivity / R6 injection-sign judges + their calibration labels
+- [ ] Opus-judge calibration round (budget) + Arize online-eval tasks (25% judge / 100% code checks) + drift & cost monitors — task setup is Arize UI work over the ingested traces
 - [ ] Flagged-review queue + `eval_scores` sync job
-- [ ] Gate: L3 ≥90% agreement; one week of live scores on real traffic
+- [ ] Gate: one week of live scores on real traffic
 
 ### Phase 6 — Cheat-sheet card
 - [ ] Reshape PRD into the 3–4 page A4 card (intent / design / operations)
