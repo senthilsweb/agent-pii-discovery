@@ -138,6 +138,11 @@ def forward_session(events: list, scan_meta: dict | None = None,
                 meta["findings_total"] = sum(f["occurrences"] for f in result["findings"])
                 for f in result["findings"]:
                     meta[f"pii.findings.{f['canonical_type']}"] = f["occurrences"]
+                    # type + sensitivity grade only — no values, no excerpts.
+                    # This is what makes R5 (sensitivity sanity) judgeable as
+                    # a native Arize online eval with zero document content
+                    # ever reaching the span, even with TELEMETRY_RECORD_IO=false.
+                    meta[f"pii.sensitivity.{f['canonical_type']}"] = f["sensitivity"]
             except Exception:  # noqa: BLE001 — telemetry never throws
                 pass
 

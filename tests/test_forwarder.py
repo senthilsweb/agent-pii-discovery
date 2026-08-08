@@ -38,8 +38,10 @@ EVENTS = [
      "input": {"scan_id": "scan_x", "result_json": json.dumps({
          "run": {"scan_id": "scan_x", "engine": "presidio"},
          "document": {"processing_status": "processed"},
-         "findings": [{"canonical_type": "EMAIL_ADDRESS", "occurrences": 3},
-                      {"canonical_type": "PERSON_NAME", "occurrences": 2}],
+         "findings": [{"canonical_type": "EMAIL_ADDRESS", "occurrences": 3,
+                       "sensitivity": "medium"},
+                      {"canonical_type": "PERSON_NAME", "occurrences": 2,
+                       "sensitivity": "medium"}],
      })},
      "processed_at": "2026-08-08T00:00:10+00:00"},
     {"type": "user.custom_tool_result", "id": "e7", "processed_at": "2026-08-08T00:00:11+00:00"},
@@ -58,6 +60,7 @@ def test_span_mapping(in_memory_provider):
     root = spans["pii_scan.session"]
     assert root.attributes["openinference.span.kind"] == "AGENT"
     assert root.attributes["pii.findings.EMAIL_ADDRESS"] == 3
+    assert root.attributes["pii.sensitivity.EMAIL_ADDRESS"] == "medium"
     assert root.attributes["findings_total"] == 5
     assert root.attributes["engine"] == "presidio"
     assert root.attributes["status"] == "processed"
