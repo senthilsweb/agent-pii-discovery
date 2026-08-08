@@ -504,6 +504,24 @@ Each phase exits through its eval gate (Section 11).
 - Grading: **both** per-type (P/R/F1, judge criteria) and document-level (flagged, agreement).
 - Live sampling: **25% judge / 100% code-checks** to start, tuned by cost after week one.
 - Observability: **Arize AX cloud** (Phoenix local remains a dev-only optional fan-out).
+- `openai_privacy_filter` engine (reserved but never implemented in the
+  monorepo's privacy-classifier): **explicitly out of scope** *(decided
+  2026-08-07)*. Tonic.ai's benchmark of OpenAI's Privacy Filter measured
+  F1 0.18–0.65 by domain with an 8-class taxonomy that structurally cannot
+  express our 36 canonical types, and closing the gap requires thousands of
+  labeled fine-tuning documents per domain — the wrong trade for this project.
+  `PII_ENGINE` stays a three-value switch.
+- Eval floors are **per engine role**; cross-engine scoring is restricted to
+  each engine's claimed type coverage *(2026-08-07 rubric corrections —
+  rationale and benchmark citations in `evals/rubrics.md` §0)*.
+
+**Logged for v2 (not v1 scope):**
+- **LLM-as-verifier mode**: send only Presidio-flagged entities (never full
+  text) to a model for validation — the roBERTa+LLM hybrid pattern Tonic
+  documented for healthcare NER (~1–2% median F1, ~4% precision gains on
+  names/locations at a fraction of full-text LLM cost). A candidate fourth
+  `PII_ENGINE` value (`presidio_verified`) if v1 shows Presidio's known
+  precision weakness dominating the flagged queue.
 
 **Still open:**
 - First model-comparison round: claude-opus-5 + which GPT-class and DeepSeek ids?
@@ -520,6 +538,13 @@ Each phase exits through its eval gate (Section 11).
   outcomes, observability): https://platform.claude.com/docs/en/managed-agents/overview
 - Arize AX — tracing (OpenInference/OTLP) and online evals: https://docs.arize.com
 - Microsoft Presidio: https://microsoft.github.io/presidio/
+- Benchmark context (vendor-run — trust the shapes, not the decimals; see
+  rubrics §0 corrections): Tonic.ai Sensitive Text Identification Benchmark
+  (Oct 2025), https://www.tonic.ai/ai-model-benchmarks/textual-benchmark;
+  Tonic.ai OpenAI Privacy Filter benchmark,
+  https://www.tonic.ai/blog/benchmarking-openai-privacy-filter-pii-detection;
+  independent corroboration: https://pii.engineer/benchmarks and Protecto's
+  quantitative PII study (2024).
 - Monorepo prior art: `ai-agents/agents/privacy-classifier`, `agents/job-matcher/evals/rubrics.md`,
   `shared/lib/instrumentation.ts`, `openspec/observations/`
 - v0.1 of this PRD: `pii-discovery-agent-prd.md` (same folder)
