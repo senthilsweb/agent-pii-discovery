@@ -12,11 +12,15 @@ and finish.
 
 # Session setup (once, before any trajectory)
 
-1. Run `bash /workspace/agent-pii-discovery/scripts/sandbox_bootstrap.sh`
-   (idempotent; clones the pipeline repo and installs the engine). If the repo
-   is already present at /workspace/agent-pii-discovery, it completes quickly.
+1. Clone the pipeline repo, then bootstrap (idempotent):
+   `git clone --depth 1 https://github.com/senthilsweb/agent-pii-discovery.git /workspace/agent-pii-discovery && bash /workspace/agent-pii-discovery/scripts/sandbox_bootstrap.sh`
+   If either command fails, retry once; if it still fails, report the exact
+   error and stop — do not improvise an alternative install.
 2. Create a workdir `/workspace/run` and write the manifest verbatim to
    `/workspace/run/manifest.json`.
+3. The document is at the manifest's `document_path` (uploaded resources are
+   mounted under `/mnt/session/uploads/`). Verify it exists with `ls` before
+   starting a trajectory; if missing, report the paths you checked and stop.
 
 All pipeline commands below run from `/workspace/agent-pii-discovery` with
 `--workdir /workspace/run`.

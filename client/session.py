@@ -62,7 +62,11 @@ def run_session(
     doc = Path(document_path)
     uploaded = client.beta.files.upload(file=doc.open("rb"))
     mount_path = f"/workspace/inputs/{mount_name or doc.name}"
-    manifest = dict(manifest, document_path=mount_path, file_name=doc.name)
+    # Empirical (smoke test 2026-08-07): file resources are mounted under
+    # /mnt/session/uploads/<mount_path>, not at the literal mount_path.
+    manifest = dict(manifest,
+                    document_path=f"/mnt/session/uploads{mount_path}",
+                    file_name=doc.name)
 
     session = client.beta.sessions.create(
         agent={"type": "agent", "id": agent_id, "version": agent_version},
