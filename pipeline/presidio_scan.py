@@ -19,10 +19,21 @@ class _AnalyzerLike(Protocol):
 
 
 def get_analyzer() -> _AnalyzerLike:
-    """Build the real Presidio engine (requires the [presidio] extra)."""
-    from presidio_analyzer import AnalyzerEngine  # lazy import
+    """Build the real Presidio engine (requires the [presidio] extra).
 
-    return AnalyzerEngine()
+    Uses the small spaCy model (en_core_web_sm, ~12 MB) rather than Presidio's
+    default en_core_web_lg (~560 MB) so the per-session sandbox bootstrap
+    stays fast; the accuracy delta is measured, not assumed — it shows up in
+    the L2/L3 per-engine scores, which is exactly where we want to see it.
+    """
+    from presidio_analyzer import AnalyzerEngine  # lazy import
+    from presidio_analyzer.nlp_engine import NlpEngineProvider
+
+    nlp = NlpEngineProvider(nlp_configuration={
+        "nlp_engine_name": "spacy",
+        "models": [{"lang_code": "en", "model_name": "en_core_web_sm"}],
+    }).create_engine()
+    return AnalyzerEngine(nlp_engine=nlp, supported_languages=["en"])
 
 
 def scan_with(analyzer: _AnalyzerLike, text: str, chunks: list[Chunk]) -> list[RawFinding]:

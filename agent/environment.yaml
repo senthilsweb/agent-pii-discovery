@@ -1,7 +1,8 @@
 # Sandbox environment for pii-discovery sessions.
 # Deny-by-default egress: the uploaded document is untrusted input; the
-# sandbox must not be able to exfiltrate. Package managers allowed for the
-# Presidio/OCR bootstrap; add hosts here only with a reason.
+# sandbox must not be able to exfiltrate. Allowed: package managers (pip) for
+# the pipeline install, and the GitHub hosts needed to clone this public repo
+# and fetch the small spaCy model wheel. Add hosts only with a reason.
 #
 # Apply ONCE:
 #   cd agent && ENV_ID=$(ant beta:environments create < environment.yaml --transform id -r)
@@ -13,4 +14,8 @@ config:
   networking:
     type: limited
     allow_package_managers: true
-    allowed_hosts: []
+    allowed_hosts:
+      - github.com
+      - codeload.github.com
+      - objects.githubusercontent.com
+      - raw.githubusercontent.com

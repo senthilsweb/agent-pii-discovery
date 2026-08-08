@@ -1,0 +1,8 @@
+{
+  "environment_id": "env_01WNd2Sbm4GeM4JX9Q2SpC3F",
+  "doc_extractor_id": "agent_017ChEygCUormXudMNc6Z3ed",
+  "genai_scanner_id": "agent_0153MjkikJbJFYR76MfLaQkK",
+  "report_assembler_id": "agent_011dp618i6dUsobKQtxwoLcM",
+  "orchestrator_id": "agent_01C6LTMCe29xCazH9Shzp6in",
+  "orchestrator_version": "1"
+}

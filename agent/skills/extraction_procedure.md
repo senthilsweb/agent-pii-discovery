@@ -1,29 +1,31 @@
 # Skill: extraction_procedure
 
 How to turn an uploaded document into scan-ready chunks. Load before the first
-extraction step of a full scan.
+extraction step of a full scan. All commands run from
+`/workspace/agent-pii-discovery` with `--workdir /workspace/run`.
 
 ## Order of operations
 
-1. **Structure gate first.** Run `pipeline/classify_structure.py <file>`.
+1. **Structure gate first.**
+   `python3 -m pipeline.steps --workdir /workspace/run classify <document>`
    Output `structured_columnar` ⇒ stop and take the columnar-reject trajectory.
-   Only `unstructured` / `semi_structured` proceed.
-2. **Text layer.** Run `pipeline/extract_text.py <file>`. It tries the native
-   text layer (PDF/DOCX/TXT) first and reports `extraction_method: text_layer`
-   with a character count.
-3. **OCR fallback.** If the text layer yields fewer than 50 non-whitespace
-   characters for a PDF/image, rerun with `--ocr`. Record
-   `extraction_method: ocr` and `ocr_enabled: true`. Never OCR a file that
-   already produced a usable text layer.
-4. **Chunk.** Run `pipeline/chunk_text.py` on the extracted text. Chunk ids are
-   stable (`chunk_0001`, …) — downstream findings cite them, so never re-chunk
-   after detection has started.
+   Only `unstructured` / `semi_structured` / `unknown` proceed.
+2. **Text layer + OCR fallback.**
+   `python3 -m pipeline.steps --workdir /workspace/run extract <document>`
+   The step handles the fallback internally (text layer first; OCR only for
+   images; < 50 non-whitespace chars ⇒ exit code 2 with a reason such as
+   `unreadable_document`). Exit 2 ⇒ stop and take the failed trajectory with
+   that reason.
+3. **Chunk.**
+   `python3 -m pipeline.steps --workdir /workspace/run chunk`
+   Chunk ids are stable (`chunk_0001`, …) — downstream findings cite them, so
+   never re-run chunking after detection has started.
 
 ## Rules
 
-- Extraction and chunking are scripts; do not paraphrase, summarize, or "clean
-  up" document text yourself.
-- A scanned image that OCR cannot read (still < 50 chars) is a failed
-  extraction: assemble a `failed` result with reason `unreadable_document`.
-- Report only counts and metadata (method, chunk count, char count) back to the
-  orchestrator thread — never the text itself.
+- Extraction and chunking are pipeline steps; never paraphrase, summarize, or
+  "clean up" document text yourself, and never re-implement a step in ad-hoc
+  bash or Python.
+- Step stdout is counts and metadata only — report exactly that upward;
+  never open `extracted.txt` or `chunks.json` in a message.
+- One extract attempt; the step's own fallback is the only retry that exists.
