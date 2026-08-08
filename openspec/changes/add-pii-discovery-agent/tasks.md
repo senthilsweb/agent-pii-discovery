@@ -37,7 +37,7 @@
 ### Phase 3 — GenAI path + model switching
 - [x] GenAI extraction (`pipeline/genai_detect.py`: typed per-chunk `messages.parse`, `MODEL_PII_EXTRACTOR → MODEL → error`, code-enforced grounding) — host-side direct path per the D2 amendment; validated live 2026-08-08 with claude-haiku-4-5 on prose_01 (6/8 types, 0 spurious, all grounded)
 - [x] `PII_ENGINE` switch live across all three engines on the direct path; normalization merge carries `source_model`
-- [ ] Per-model scanner fan-out in sessions (v2 — needs a vault API-key credential)
+- [ ] Per-model scanner fan-out in sessions (v2 — the vault credential is now provisioned, [ADR 0004](../../adr/0004-scanner-vault-provisioned.md): `vlt_011CdquAYPJMTvYMyqSmYQmG`, header-only, scoped to `api.anthropic.com`. NOT yet wired into sessions/environment — needs explicit go-ahead, it's a real scope change: `vault_ids` on session create, `api.anthropic.com` in environment `allowed_hosts`, new L2 trajectory coverage)
 - [ ] CI engine matrix for L2 (blocked on budgeted L2-in-CI decision)
 - [ ] Gate: L2 P/R/F1 floors per model (rubrics §0); cross-model agreement reported
 

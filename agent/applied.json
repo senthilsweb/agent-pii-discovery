@@ -4,5 +4,7 @@
   "genai_scanner_id": "agent_0153MjkikJbJFYR76MfLaQkK",
   "report_assembler_id": "agent_011dp618i6dUsobKQtxwoLcM",
   "orchestrator_id": "agent_01C6LTMCe29xCazH9Shzp6in",
-  "orchestrator_version": "5"
+  "orchestrator_version": "5",
+  "genai_scanner_vault_id": "vlt_011CdquAYPJMTvYMyqSmYQmG",
+  "genai_scanner_vault_credential_id": "vcrd_01QLjBtKj2BmZjTEXfEfkAF7"
 }

@@ -1,6 +1,6 @@
 # Observation 0001 — Defect log, Phases 0–5 (2026-08-07 → 2026-08-08)
 
-Thirteen defects were found and resolved during the Phase 0–5 bolts. Each is
+Fourteen defects were found and resolved during the Phase 0–5 bolts. Each is
 tracked as a GitHub issue with phase, evidence (session ids where a live
 session exposed it), root cause, and fixing commit. Consolidated here so the
 lessons outlive the issue tracker.
@@ -19,6 +19,7 @@ lessons outlive the issue tracker.
 | #10 | 4 · env plumbing | BSD grep alternation dropped ARIZE_SPACE_ID mid-copy; surfaced by the forwarder's no-backend warning | in-session |
 | #12 | 4 · CI | `dev` extra missing the OTel OTLP exporter package — CI silently red for ~10 commits, never caught because local dev used a hand-provisioned venv | (this session) |
 | #13 | 5 · MinIO wiring | boto3 client had no path-style addressing (MinIO requires it); initial endpoint given was the console vhost, not the S3 API | (this session) |
+| #14 | 3 · vault provisioning | Static API key meant for a vault credential was briefly set as host default auth (`ANTHROPIC_API_KEY`) — wrong workspace, would have broken every host-side call; caught before any live session used it | (this session) |
 
 ## The patterns worth keeping
 
@@ -44,3 +45,13 @@ lessons outlive the issue tracker.
    correction; it was testing the literal value first (got a real error),
    then checking what a *known-working* sibling deployment
    (`linkedin-cover-generator`) actually uses, and testing that.
+7. **Two things called "an API key" are not interchangeable.** #14: the same
+   secret plays a different role depending on where it's set — host-side
+   `ANTHROPIC_API_KEY` authenticates the process talking to the *control
+   plane* (workspace-scoped, must match); a vault `environment_variable`
+   credential authenticates the *sandbox's own outbound request*
+   (workspace-agnostic). Conflating the two is an easy mistake precisely
+   because both are "an Anthropic key" on the surface. The check that caught
+   it: a single free read (`agents.retrieve`) against a resource already
+   known to exist — if a credential can't see something it should, that's
+   the credential, not the resource.
