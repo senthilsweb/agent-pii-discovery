@@ -27,3 +27,6 @@ __pycache__/
 .DS_Store
 .idea/
 .vscode/
+
+# Python build artifacts
+*.egg-info/
