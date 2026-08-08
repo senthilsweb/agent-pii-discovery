@@ -43,8 +43,8 @@
 ### Phase 4 — Observability
 - [x] Session-event → OpenInference forwarder (`client/forwarder.py`: AGENT root + LLM/TOOL children, token counts from `model_usage`, `model_id` resource attr, `TELEMETRY_RECORD_IO` gate, degrades to one warning; works on archived sessions; auto-runs after each scan). 5 mapping tests in-memory.
 - [x] Verified against a real collector 2026-08-08: archived L2 session `sesn_01Ju4eNE…` → 81 events → 22 spans, root span queryable in local Phoenix with scan_id/engine/per-type counts.
-- [ ] Arize AX ingest — needs `ARIZE_SPACE_ID` + `ARIZE_API_KEY` in `.env` (owner step; forwarder already wired), then re-forward the archived sessions and spot-check spans/tokens in Arize
-- [ ] Arize dashboards for the live KPIs (after first ingest)
+- [x] Arize AX ingest — credentials sourced from claimwise-agents 2026-08-08; all 10 archived sessions backfilled (822 events → 231 spans, zero export errors). Traces land in the Arize project named by the `model_id` resource attribute: **agent-pii-discovery**.
+- [ ] Owner spot-check in the Arize UI (project `agent-pii-discovery`: 10 traces, token counts on LLM spans, finding counts on root spans) → then dashboards for the live KPIs
 
 ### Phase 5 — Live eval
 - [ ] Judge evaluators for rubric R1–R6; calibration set
