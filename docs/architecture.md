@@ -47,7 +47,7 @@ harness change unchanged.
 |---|---|---|
 | Agent harness | Claude Managed Agents (beta) | The loop: orchestrator turns, subagent threads, tool dispatch |
 | Hosting substrate | Anthropic per-session sandbox containers | Where bash/file/script tools execute; `limited` egress |
-| Orchestrator model | claude-opus-5 (adaptive thinking, effort medium) | Plans and routes; never analyzes documents |
+| Orchestrator model | claude-sonnet-5 (adaptive thinking, effort medium) | Plans and routes; never analyzes documents. Sonnet since v4 (2026-08-08) — routing isn't intelligence-bound, and sessions cost ~1/3 of Opus |
 | Extraction model | env-resolved (`MODEL_PII_EXTRACTOR`) | The one generative step; Claude / GPT-class / DeepSeek |
 | Deterministic engine | Microsoft Presidio + regex | The no-LLM baseline path |
 | Client | Python 3.12 | Session driver, host-side tools, forwarder, eval harness |

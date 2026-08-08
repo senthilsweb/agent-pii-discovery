@@ -14,8 +14,13 @@ description: >-
   PII discovery coordinator. Plans and routes one document scan per session:
   deterministic pipeline steps + a single typed GenAI extraction step, fanned
   out per model under comparison. Never analyzes documents itself.
+# Sonnet 5 (2026-08-08, cost decision): the orchestrator plans and routes
+# along three fixed trajectories and never analyzes content — Sonnet-tier
+# agentic quality suffices, at ~1/3 the session cost of Opus ($2/$10 intro
+# through 2026-08-31, then $3/$15, vs $5/$25). Revisit only if trajectory
+# evals regress.
 model:
-  id: claude-opus-5
+  id: claude-sonnet-5
   effort: medium
 system: "@./system_prompt.md"
 tools:

@@ -148,9 +148,10 @@ the prompt-injection defense (Section 12).
 
 ### 7.1 Orchestrator (planner)
 
-- Managed Agent `pii-orchestrator`, `model: claude-opus-5` (adaptive thinking on by
-  default; `effort: medium` — routing is not intelligence-bound; raise per route if
-  evals say so).
+- Managed Agent `pii-orchestrator`, `model: claude-sonnet-5` (adaptive thinking;
+  `effort: medium`). *(Amended 2026-08-08: was claude-opus-5. Routing is not
+  intelligence-bound and Sonnet 5 cuts session cost to ~1/3; revisit only if
+  trajectory evals regress.)*
 - Role: **plan and route, not analyze.** Reads the job manifest, decides the path
   (cached / columnar-reject / scan), sequences the deterministic tools, fans out
   the GenAI scan, assembles the run report from tool outputs.
