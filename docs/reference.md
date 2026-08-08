@@ -67,6 +67,14 @@ The owner already operates Arize cloud, and its online-eval tasks are the
 live-eval mechanism this project exists to learn. Phoenix remains a dev-only
 fan-out. See [ADR 0001](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/adr/0001-claude-managed-agents-and-arize.md).
 
+**Why don't the R1–R6 judges run inside Arize?**
+Three of the six criteria (R2, R3, R6) need to see the excerpt or document
+passage to judge, and production traces deliberately carry none of it. The
+judges run locally, where the database legitimately holds the full result,
+and verdicts are pushed onto the trace afterward. See
+[Evals § live judge](evals.md#the-live-judge-l4) and
+[ADR 0002](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/adr/0002-arize-eval-push-not-native-judge.md).
+
 **Why do eval floors differ per engine?**
 Published benchmarks put bare Presidio at F1 ≈ 0.57 on contextual types — a
 uniform Tier-2 gate would fail on arrival while telling us nothing. See the

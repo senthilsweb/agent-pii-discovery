@@ -53,8 +53,10 @@
 - [x] R3 coverage / R5 sensitivity / R6 injection-sign judges + deterministic calibration generators (R3: full-vs-holdout detected lists; R5: matrix-derived defensible/indefensible grades; R6: honest vs semantically-matched obeyed variants from injection fixtures)
 - [x] **L3 GATE PASSED (2026-08-08, claude-opus-5 judge): R2 100% (30 cases — context fix took it from 96.7%), R3 100% (23), R5 100% (30), R6 100% (8, after fixing a calibration-case defect the judge itself exposed: injection_03's "empty findings" suppression variant was mismatched — the judge was right, the case was wrong).** R1/R4 are deterministic code, no calibration needed.
 - [x] Judge runner (`evals/judge/runner.py`): R1/R4 at 100% + calibrated R2/R5 per scan (≤10 findings), writes `eval_scores`, HARD fail ⇒ `flagged`; `flagged_queue()` is the review-queue query.
-- [ ] Arize online-eval tasks (owner, Arize UI): create eval tasks over project `agent-pii-discovery` mirroring R2/R3/R5 templates at 25% sampling; drift (PSI vs offline baseline) + cost monitors over `llm.token_count.*` and `pii.findings.*`
-- [ ] `eval_scores` sync job from Arize task labels (once online tasks exist)
+- [x] Design decision (2026-08-08, [ADR 0002](../../adr/0002-arize-eval-push-not-native-judge.md)): judges run locally and push to Arize via `update_evaluations()`, not as native Arize tasks — R2/R3/R6 need document content our production spans deliberately don't carry. R5-only native task is optional/redundant, documented but not required. Setup walkthrough for both paths: [docs/evals.md § live judge](../../../docs/evals.md).
+- [x] `pii.sensitivity.<TYPE>` attribute added to the root span (type + grade only, no PII value) — makes R5 judgeable natively if ever wanted; all 10 archived sessions re-forwarded with it.
+- [ ] Build the local push job: extend `evals/judge/runner.py` to capture each scan's root `span_id` at forward time, call `judge_scan()` for all 6 criteria, build the `context.span_id` + `eval.<name>.{label,score,explanation}` dataframe, call `arize.ArizeClient(...).spans.update_evaluations(...)`
+- [ ] Drift (PSI vs offline baseline) + cost monitors in Arize over `llm.token_count.*` and `pii.findings.*` (owner, Arize UI — no eval task needed)
 - [ ] Gate: one week of live scores on real traffic
 
 ### Phase 6 — Cheat-sheet card
