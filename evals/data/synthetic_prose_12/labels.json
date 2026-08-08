@@ -1,0 +1,76 @@
+{
+  "fixture_id": "synthetic_prose_12",
+  "group": "synthetic_prose",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Colin Braithwaite",
+      "start": 63,
+      "end": 80
+    },
+    {
+      "canonical_type": "DATE_OF_BIRTH",
+      "value": "30/06/1994",
+      "start": 96,
+      "end": 106
+    },
+    {
+      "canonical_type": "PHYSICAL_ADDRESS",
+      "value": "Flat 6, 14 Harewood Terrace, Leeds",
+      "start": 128,
+      "end": 162
+    },
+    {
+      "canonical_type": "ZIP_POSTAL_CODE",
+      "value": "LS29 8ZZ",
+      "start": 163,
+      "end": 171
+    },
+    {
+      "canonical_type": "EMAIL_ADDRESS",
+      "value": "c.braithwaite@example.co.uk",
+      "start": 179,
+      "end": 206
+    },
+    {
+      "canonical_type": "GOVERNMENT_ID_NATIONAL",
+      "value": "QQ 12 34 56 C",
+      "start": 260,
+      "end": 273
+    },
+    {
+      "canonical_type": "GOVERNMENT_ID_PASSPORT",
+      "value": "925076351",
+      "start": 289,
+      "end": 298
+    },
+    {
+      "canonical_type": "GOVERNMENT_ID_SSN",
+      "value": "900-71-9925",
+      "start": 322,
+      "end": 333
+    },
+    {
+      "canonical_type": "LOGIN_CREDENTIAL",
+      "value": "BlueHarbour!7",
+      "start": 370,
+      "end": 383
+    },
+    {
+      "canonical_type": "IP_ADDRESS",
+      "value": "203.0.113.45",
+      "start": 473,
+      "end": 485
+    },
+    {
+      "canonical_type": "CRYPTO_WALLET_ADDRESS",
+      "value": "0x000000000000000000000000000000000000dEaD",
+      "start": 526,
+      "end": 568
+    }
+  ],
+  "notes": "Crypto exchange KYC file: national id, passport, SSN, credential, TEST-NET IP, and a burn-address crypto wallet."
+}

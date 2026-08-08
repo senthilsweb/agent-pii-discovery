@@ -25,6 +25,13 @@ monitors on top.
 control-plane YAML, and eval rubrics are in place; implementation follows the
 phase gates in [`openspec/changes/add-pii-discovery-agent/tasks.md`](openspec/changes/add-pii-discovery-agent/tasks.md).
 
+## Documentation
+
+The wiki is published at **https://senthilsweb.github.io/agent-pii-discovery/**
+(MkDocs Material, built by `.github/workflows/docs.yml`):
+Overview · Getting Started · Code Tour · Architecture · Configuration · Evals ·
+Deployment & Integration · Operations · Reference.
+
 ## Read in this order
 
 1. [`docs/prd.md`](docs/prd.md) — requirements, architecture, KPIs (v0.2)

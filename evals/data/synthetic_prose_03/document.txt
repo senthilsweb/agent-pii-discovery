@@ -1,0 +1,16 @@
+SUPPORT TICKET #48213 — BILLING DISPUTE (email thread)
+
+From: m.ellery@example.com
+To: billing desk
+Subject: Duplicate charge on my card
+
+Hi, I was charged twice for order #99120. The card on file is 4111 1111 1111 1111 and both charges hit on the same day. Please refund one. You can reach me at (503) 555-0117 if you need anything.
+
+— Marcus Ellery
+
+----------------------------------------
+
+From: billing desk
+To: m.ellery@example.com
+
+Thanks for flagging this. Our logs show both charges originated from IP 203.0.113.88 during a session on your tablet (device serial SN-KX903TT2Q). We have refunded the duplicate charge to the same card; please allow 3-5 business days.

@@ -1,0 +1,15 @@
+FIRST HARBOR CREDIT UNION — PERSONAL LOAN APPLICATION
+
+Applicant name: Priya Raghunathan
+Date of birth: 11/02/1990
+SSN: 900-45-6273
+ITIN (spouse, non-resident): 912-70-5678
+Home address: 58 Coppermill Lane, Edison, NJ 08817
+Phone: (732) 555-0109
+Email: priya.raghunathan@example.com
+
+Employment: Staff Engineer at Halberd Systems with annual income of $148,000.
+
+Deposit account for disbursement: checking account 003942178854, routing number 990000013. For the overseas co-signer, funds may alternatively settle to IBAN GB82 WEST 1234 5698 7654 32.
+
+Declaration: I, Priya Raghunathan, holder of SSN 900-45-6273, certify that the information above is true and complete.

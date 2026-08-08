@@ -1,0 +1,5 @@
+RELEASE NOTES — LEDGERKIT 4.2
+
+Highlights: the reconciliation API now paginates at 500 records per response, and bulk imports stream instead of buffering, reducing peak memory by 63 percent on large files. Fixed: a rounding defect in multi-currency journals when the base currency had zero-decimal precision; duplicate webhook delivery after a failed retry; and a crash on empty CSV headers. Deprecated: the v1 export endpoint is now scheduled for removal in 5.0.
+
+Upgrade guides are published in the developer portal.

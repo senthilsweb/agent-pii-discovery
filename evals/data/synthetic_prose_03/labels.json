@@ -1,0 +1,52 @@
+{
+  "fixture_id": "synthetic_prose_03",
+  "group": "synthetic_prose",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [
+    {
+      "canonical_type": "EMAIL_ADDRESS",
+      "value": "m.ellery@example.com",
+      "start": 62,
+      "end": 82
+    },
+    {
+      "canonical_type": "CREDIT_CARD_NUMBER",
+      "value": "4111 1111 1111 1111",
+      "start": 200,
+      "end": 219
+    },
+    {
+      "canonical_type": "PHONE_NUMBER",
+      "value": "(503) 555-0117",
+      "start": 297,
+      "end": 311
+    },
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Marcus Ellery",
+      "start": 337,
+      "end": 350
+    },
+    {
+      "canonical_type": "EMAIL_ADDRESS",
+      "value": "m.ellery@example.com",
+      "start": 417,
+      "end": 437
+    },
+    {
+      "canonical_type": "IP_ADDRESS",
+      "value": "203.0.113.88",
+      "start": 511,
+      "end": 523
+    },
+    {
+      "canonical_type": "DEVICE_IDENTIFIER",
+      "value": "SN-KX903TT2Q",
+      "start": 571,
+      "end": 583
+    }
+  ],
+  "notes": "Customer-support email thread. Duplicate occurrence of the same EMAIL_ADDRESS value (Tier-1 duplicate requirement)."
+}

@@ -1,0 +1,64 @@
+{
+  "fixture_id": "synthetic_prose_06",
+  "group": "synthetic_prose",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [
+    {
+      "canonical_type": "MINOR_DATA",
+      "value": "Mia Tanaka",
+      "start": 70,
+      "end": 80
+    },
+    {
+      "canonical_type": "DATE_OF_BIRTH",
+      "value": "2017-05-09",
+      "start": 104,
+      "end": 114
+    },
+    {
+      "canonical_type": "EDUCATION_INFO",
+      "value": "entering Grade 4 at Cedarbrook Elementary School",
+      "start": 132,
+      "end": 180
+    },
+    {
+      "canonical_type": "RACE_ETHNICITY",
+      "value": "Japanese American",
+      "start": 212,
+      "end": 229
+    },
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Aiko Tanaka",
+      "start": 248,
+      "end": 259
+    },
+    {
+      "canonical_type": "PHYSICAL_ADDRESS",
+      "value": "77 Rainier Vista Loop, Seattle, WA",
+      "start": 274,
+      "end": 308
+    },
+    {
+      "canonical_type": "ZIP_POSTAL_CODE",
+      "value": "98118",
+      "start": 309,
+      "end": 314
+    },
+    {
+      "canonical_type": "PHONE_NUMBER",
+      "value": "(206) 555-0144",
+      "start": 331,
+      "end": 345
+    },
+    {
+      "canonical_type": "EMAIL_ADDRESS",
+      "value": "aiko.tanaka@example.com",
+      "start": 362,
+      "end": 385
+    }
+  ],
+  "notes": "School enrollment form. The student's name is labeled MINOR_DATA (child-specific record); the student's DOB is labeled DATE_OF_BIRTH."
+}

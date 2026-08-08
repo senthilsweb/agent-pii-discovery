@@ -1,0 +1,70 @@
+{
+  "fixture_id": "synthetic_ocr_02",
+  "group": "synthetic_ocr",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Janet Kowalczyk",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "HEALTH_RECORD_ID",
+      "value": "MRN-4478210",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "DATE_OF_BIRTH",
+      "value": "07/22/1961",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "GENDER",
+      "value": "female",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "GOVERNMENT_ID_SSN",
+      "value": "900-58-3321",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "PHYSICAL_ADDRESS",
+      "value": "902 Lakeshore Court, Milwaukee, WI",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "ZIP_POSTAL_CODE",
+      "value": "53202",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "PHONE_NUMBER",
+      "value": "(414) 555-0182",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "HEALTH_CONDITION",
+      "value": "type 2 diabetes mellitus",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "HEALTH_CONDITION",
+      "value": "essential hypertension",
+      "start": null,
+      "end": null
+    }
+  ],
+  "notes": "PNG render of source_fixture=synthetic_prose_02. OCR offsets differ from the source text, so spans are null — match findings by value."
+}

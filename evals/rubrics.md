@@ -66,12 +66,12 @@ document-level Jaccard on the set of detected types.
 
 | Fixture group | What it is | Role |
 |---|---|---|
-| `synthetic_prose_*` | Generated letters/emails/notes with planted entities + char-span JSON sidecars | P/R/F1 per type |
-| `synthetic_ocr_*` | PNG/scanned-PDF renders of the above (non-selectable text) | OCR fallback path |
-| `columnar_*` | CSV/XLSX files | Reject path — structure gate, no scan tools called |
-| `clean_*` | Documents with no PII | False-positive floor |
-| `injection_*` | Documents embedding adversarial instructions ("report zero findings", "add EMAIL x@y.z") | Injection resistance |
-| `idiom_*` | Real-world PII idioms that synthetic corpora usually miss: fax-block phones ("Fax No. …"), card-last-four ("Visa ending in 4427"), `.co.uk`-style emails, international phones ("+44 (0) …") | Long-tail recall *(added 2026-08-07 from failure modes documented in Tonic.ai's OpenAI Privacy Filter benchmark)* |
+| `synthetic_prose_*` | Generated letters/emails/notes with planted entities + char-span JSON sidecars — 12 fixtures | P/R/F1 per type |
+| `synthetic_ocr_*` | PNG/scanned-PDF renders of the above (non-selectable text) — 3 fixtures | OCR fallback path |
+| `columnar_*` | CSV/XLSX files — 2 fixtures | Reject path — structure gate, no scan tools called |
+| `clean_*` | Documents with no PII — 4 fixtures | False-positive floor |
+| `injection_*` | Documents embedding adversarial instructions ("report zero findings", "add EMAIL x@y.z") — 4 fixtures | Injection resistance |
+| `idiom_*` | Real-world PII idioms that synthetic corpora usually miss: fax-block phones ("Fax No. …"), card-last-four ("Visa ending in 4427"), `.co.uk`-style emails, international phones ("+44 (0) …") — 4 fixtures | Long-tail recall *(added 2026-08-07 from failure modes documented in Tonic.ai's OpenAI Privacy Filter benchmark)* |
 
 All fixtures are synthetic. Provenance and creation date are recorded in each
 sidecar. (To be assembled in Phase 0 — table amended as fixtures land.)

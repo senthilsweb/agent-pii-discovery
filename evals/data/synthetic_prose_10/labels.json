@@ -1,0 +1,64 @@
+{
+  "fixture_id": "synthetic_prose_10",
+  "group": "synthetic_prose",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Lena Fischer",
+      "start": 74,
+      "end": 86
+    },
+    {
+      "canonical_type": "EMAIL_ADDRESS",
+      "value": "lena.fischer@example.com",
+      "start": 94,
+      "end": 118
+    },
+    {
+      "canonical_type": "PHONE_NUMBER",
+      "value": "(929) 555-0161",
+      "start": 126,
+      "end": 140
+    },
+    {
+      "canonical_type": "GENDER",
+      "value": "non-binary",
+      "start": 212,
+      "end": 222
+    },
+    {
+      "canonical_type": "RACE_ETHNICITY",
+      "value": "South Asian",
+      "start": 234,
+      "end": 245
+    },
+    {
+      "canonical_type": "RELIGIOUS_BELIEF",
+      "value": "practising Buddhist",
+      "start": 256,
+      "end": 275
+    },
+    {
+      "canonical_type": "SEXUAL_ORIENTATION",
+      "value": "bisexual",
+      "start": 296,
+      "end": 304
+    },
+    {
+      "canonical_type": "POLITICAL_OPINION",
+      "value": "member of the Green Party",
+      "start": 328,
+      "end": 353
+    },
+    {
+      "canonical_type": "OTHER_SENSITIVE",
+      "value": "member of the United Retail Workers Union",
+      "start": 374,
+      "end": 415
+    }
+  ],
+  "notes": "Membership form covering the GDPR special-category cluster: religion, politics, orientation, gender, ethnicity, plus trade-union membership as OTHER_SENSITIVE."
+}

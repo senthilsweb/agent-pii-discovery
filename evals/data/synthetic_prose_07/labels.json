@@ -1,0 +1,52 @@
+{
+  "fixture_id": "synthetic_prose_07",
+  "group": "synthetic_prose",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Owen McAllister",
+      "start": 71,
+      "end": 86
+    },
+    {
+      "canonical_type": "EMAIL_ADDRESS",
+      "value": "o.mcallister@example.com",
+      "start": 88,
+      "end": 112
+    },
+    {
+      "canonical_type": "DEVICE_IDENTIFIER",
+      "value": "C02XK1ZQJG5H",
+      "start": 148,
+      "end": 160
+    },
+    {
+      "canonical_type": "MAC_ADDRESS",
+      "value": "02:42:AC:11:00:02",
+      "start": 166,
+      "end": 183
+    },
+    {
+      "canonical_type": "IP_ADDRESS",
+      "value": "198.51.100.23",
+      "start": 260,
+      "end": 273
+    },
+    {
+      "canonical_type": "LOGIN_CREDENTIAL",
+      "value": "Sunfl0wer!91",
+      "start": 366,
+      "end": 378
+    },
+    {
+      "canonical_type": "IP_ADDRESS",
+      "value": "198.51.100.23",
+      "start": 473,
+      "end": 486
+    }
+  ],
+  "notes": "IT incident ticket. Duplicate occurrence of the same IP_ADDRESS value (Tier-1 duplicate requirement)."
+}

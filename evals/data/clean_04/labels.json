@@ -1,0 +1,9 @@
+{
+  "fixture_id": "clean_04",
+  "group": "clean",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [],
+  "notes": "Market analysis. Cities appear only as market references; zero PII."
+}

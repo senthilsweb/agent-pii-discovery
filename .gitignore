@@ -1,10 +1,15 @@
-# Real PII never lands in this public repo
-uploads/
+# Real PII never lands in this public repo. Patterns are anchored to the repo
+# root: evals/data/ is the SYNTHETIC fixture corpus and is committed
+# (see evals/corpus/generate.py — all values fabricated).
+/uploads/
 runs/
-data/
-exports/
+/data/
+/exports/
 *.duckdb
 *.duckdb.wal
+
+# MkDocs local build output
+/site/
 
 # Python
 __pycache__/

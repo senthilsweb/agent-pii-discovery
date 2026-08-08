@@ -1,0 +1,5 @@
+ATLAS SYNC — Q3 PRODUCT ROADMAP MEMO
+
+The Atlas Sync platform ships three milestones this quarter. First, the offline reconciliation engine moves from beta to general availability, cutting median sync latency from 4.2 seconds to 1.1 seconds in internal benchmarks. Second, the audit-log exporter gains parquet output so downstream warehouses can ingest events without a conversion step. Third, the self-serve trial flow is being rebuilt to reduce time-to-first-sync below five minutes.
+
+Pricing remains unchanged for existing plans. The Product Team will publish detailed release notes with each milestone.

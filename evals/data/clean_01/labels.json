@@ -1,0 +1,9 @@
+{
+  "fixture_id": "clean_01",
+  "group": "clean",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [],
+  "notes": "Product roadmap memo. Zero PII: no names, emails, phones, or ids."
+}

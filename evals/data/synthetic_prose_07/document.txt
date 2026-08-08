@@ -1,0 +1,8 @@
+IT INCIDENT TICKET INC-77120 — SUSPICIOUS LOGIN ACTIVITY
+
+Reported by: Owen McAllister (o.mcallister@example.com)
+Asset: engineering laptop, serial C02XK1ZQJG5H, MAC 02:42:AC:11:00:02
+
+Summary: Repeated failed sudo attempts followed by a successful login from 198.51.100.23 outside business hours. The service account involved was svc_backup with temporary password Sunfl0wer!91, which was found written in a shared runbook.
+
+Containment: the password has been rotated and 198.51.100.23 is now blocked at the perimeter firewall. Follow-up: audit all runbooks for embedded credentials.

@@ -1,0 +1,9 @@
+{
+  "fixture_id": "clean_02",
+  "group": "clean",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [],
+  "notes": "Relocation announcement. City used as an office label only; teams referenced by role, never by person."
+}

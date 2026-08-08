@@ -1,0 +1,10 @@
+AURORA TRAVEL — BOOKING CONFIRMATION QX7L2M
+
+Passenger: Sofia Lindqvist
+Date of birth: 1985-09-30
+Passport number: XF2038419 (required for international check-in)
+Contact: sofia.lindqvist@example.com / +1 (646) 555-0172
+
+Itinerary: New York (JFK) to Stockholm (ARN), departing 2026-09-14.
+
+Payment: charged to card 4012 8888 8888 1881. Receipt: card 4012 8888 8888 1881 was billed $1,241.60 including taxes. The booking was made from IP address 192.0.2.201 and is protected by our fraud-screening service.

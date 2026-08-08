@@ -1,0 +1,3 @@
+CHARGEBACK REVIEW NOTE — CASE CB-2093
+
+Cardholder Derek Whitcombe disputes a recurring charge of $29.99. The charge was made to the customer's Visa ending in 4427, which matches the card on the subscription profile. Recommendation: refund the most recent cycle and cancel auto-renewal.

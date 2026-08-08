@@ -1,0 +1,52 @@
+{
+  "fixture_id": "synthetic_ocr_03",
+  "group": "synthetic_ocr",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Owen McAllister",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "EMAIL_ADDRESS",
+      "value": "o.mcallister@example.com",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "DEVICE_IDENTIFIER",
+      "value": "C02XK1ZQJG5H",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "MAC_ADDRESS",
+      "value": "02:42:AC:11:00:02",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "IP_ADDRESS",
+      "value": "198.51.100.23",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "LOGIN_CREDENTIAL",
+      "value": "Sunfl0wer!91",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "IP_ADDRESS",
+      "value": "198.51.100.23",
+      "start": null,
+      "end": null
+    }
+  ],
+  "notes": "PNG render of source_fixture=synthetic_prose_07. OCR offsets differ from the source text, so spans are null — match findings by value."
+}

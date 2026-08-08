@@ -1,0 +1,66 @@
+# Wiki site, published to GitHub Pages by .github/workflows/docs.yml.
+# Publishing mechanics: the mkdocs-site skill. Content structure (these
+# pages): the ai-agent-docs skill — the standard for any agent repo.
+# Writing standard: https://senthilsweb.github.io/ai-agents/style-guide/
+site_name: agent-pii-discovery
+site_url: https://senthilsweb.github.io/agent-pii-discovery/
+repo_url: https://github.com/senthilsweb/agent-pii-discovery
+repo_name: senthilsweb/agent-pii-discovery
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.footer
+    - navigation.top
+    - content.code.copy
+    - search.suggest
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue grey
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue grey
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+nav:
+  - Overview: index.md
+  - Getting Started: getting-started.md
+  - Code Tour: code-tour.md
+  - Architecture: architecture.md
+  - Configuration: configuration.md
+  - Evals: evals.md
+  - Deployment & Integration: deployment-integration.md
+  - Operations: operations.md
+  - Reference: reference.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+extra_javascript:
+  - https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
+  - javascripts/tablesort.js

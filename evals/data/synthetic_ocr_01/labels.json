@@ -1,0 +1,64 @@
+{
+  "fixture_id": "synthetic_ocr_01",
+  "group": "synthetic_ocr",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Daniel Okafor",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "PHYSICAL_ADDRESS",
+      "value": "1847 Willow Bend Drive, Apt 3C, Springfield, IL",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "ZIP_POSTAL_CODE",
+      "value": "62704",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Daniel Okafor",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "EMPLOYMENT_INFO",
+      "value": "Senior Financial Analyst at Meridian Grain Cooperative at an annual salary of $92,500",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "DATE_OF_BIRTH",
+      "value": "March 14, 1988",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "GOVERNMENT_ID_SSN",
+      "value": "900-22-4187",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "EMAIL_ADDRESS",
+      "value": "daniel.okafor@example.com",
+      "start": null,
+      "end": null
+    },
+    {
+      "canonical_type": "PHONE_NUMBER",
+      "value": "(217) 555-0134",
+      "start": null,
+      "end": null
+    }
+  ],
+  "notes": "PNG render of source_fixture=synthetic_prose_01. OCR offsets differ from the source text, so spans are null — match findings by value."
+}

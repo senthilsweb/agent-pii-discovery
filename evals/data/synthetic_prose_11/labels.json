@@ -1,0 +1,52 @@
+{
+  "fixture_id": "synthetic_prose_11",
+  "group": "synthetic_prose",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Farid Qureshi",
+      "start": 59,
+      "end": 72
+    },
+    {
+      "canonical_type": "HEALTH_RECORD_ID",
+      "value": "MRN-9931077",
+      "start": 78,
+      "end": 89
+    },
+    {
+      "canonical_type": "DATE_OF_BIRTH",
+      "value": "02/18/1979",
+      "start": 95,
+      "end": 105
+    },
+    {
+      "canonical_type": "GENDER",
+      "value": "male",
+      "start": 113,
+      "end": 117
+    },
+    {
+      "canonical_type": "HEALTH_CONDITION",
+      "value": "hereditary breast and ovarian cancer syndrome",
+      "start": 149,
+      "end": 194
+    },
+    {
+      "canonical_type": "GENETIC_DATA",
+      "value": "heterozygous pathogenic variant BRCA2 c.5946delT detected",
+      "start": 205,
+      "end": 262
+    },
+    {
+      "canonical_type": "BIOMETRIC_IDENTIFIER",
+      "value": "FPT-88213",
+      "start": 384,
+      "end": 393
+    }
+  ],
+  "notes": "Genetics lab report: GENETIC_DATA is the full variant finding phrase; BIOMETRIC_IDENTIFIER is the fingerprint template id."
+}

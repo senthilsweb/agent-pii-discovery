@@ -1,0 +1,11 @@
+HELIX DIAGNOSTICS — GENETIC TEST REPORT GT-30071
+
+Patient: Farid Qureshi
+MRN: MRN-9931077
+DOB: 02/18/1979   Sex: male
+
+Indication: family history of hereditary breast and ovarian cancer syndrome.
+
+Result: heterozygous pathogenic variant BRCA2 c.5946delT detected. Recommend referral to genetic counseling.
+
+Chain of custody: sample identity confirmed at draw via fingerprint template FPT-88213 on file with the phlebotomy service.

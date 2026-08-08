@@ -1,0 +1,15 @@
+NORTHBRIDGE DIGITAL ASSETS — KYC VERIFICATION FILE
+
+Applicant: Colin Braithwaite
+Date of birth: 30/06/1994
+Residential address: Flat 6, 14 Harewood Terrace, Leeds LS29 8ZZ
+Email: c.braithwaite@example.co.uk
+
+Identity documents:
+- UK National Insurance number: QQ 12 34 56 C
+- UK passport: 925076351
+- US SSN (dual filer): 900-71-9925
+
+Account security: initial password BlueHarbour!7 set at onboarding (forced reset on first login). Registration session originated from IP 203.0.113.45.
+
+Withdrawal allowlist: verified wallet 0x000000000000000000000000000000000000dEaD (self-custody, attested 2026-08-01).

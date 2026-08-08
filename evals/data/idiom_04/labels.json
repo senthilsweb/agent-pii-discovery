@@ -1,0 +1,22 @@
+{
+  "fixture_id": "idiom_04",
+  "group": "idiom",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Alistair Rowe",
+      "start": 53,
+      "end": 66
+    },
+    {
+      "canonical_type": "PHONE_NUMBER",
+      "value": "+44 (0) 20 5555 0199",
+      "start": 138,
+      "end": 158
+    }
+  ],
+  "notes": "Idiom: international phone with '+44 (0)' styling."
+}

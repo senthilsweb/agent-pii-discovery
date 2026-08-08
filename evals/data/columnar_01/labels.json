@@ -1,0 +1,9 @@
+{
+  "fixture_id": "columnar_01",
+  "group": "columnar",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "skipped_out_of_scope",
+  "entities": [],
+  "notes": "Columnar reject-path fixture: CSV with PII-looking columns. The structure gate must skip it; contents are deliberately unlabeled."
+}

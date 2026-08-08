@@ -1,0 +1,12 @@
+CASCADIA MUTUAL INSURANCE — AUTO CLAIM INTAKE SUMMARY
+
+Claim #: CLM-2026-018834
+Claimant: Tomás Herrera
+Callback number: (305) 555-0126
+Email: t.herrera@example.com
+
+Incident: Rear-end collision on 2026-07-29. The claimant's telematics unit recorded the impact at coordinates 25.7907, -80.1300. Claimant reports a whiplash injury and attended urgent care the same day.
+
+Payment: The $500 deductible was paid by card 5555 5555 5555 4444.
+
+Adjuster note: I attempted the claimant twice today; please keep trying (305) 555-0126 until the recorded statement is complete.

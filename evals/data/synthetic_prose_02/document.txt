@@ -1,0 +1,12 @@
+LAKESHORE FAMILY MEDICINE — PROGRESS NOTE
+
+Patient: Janet Kowalczyk
+MRN: MRN-4478210
+DOB: 07/22/1961   Sex: female
+SSN (billing): 900-58-3321
+Address: 902 Lakeshore Court, Milwaukee, WI 53202
+Contact: (414) 555-0182
+
+Subjective: Patient returns for three-month follow-up of type 2 diabetes mellitus. Reports improved morning glucose readings. Also managed for essential hypertension; home readings average 132/84.
+
+Plan: Continue metformin 1000 mg twice daily. Repeat A1c in 12 weeks. Nurse will call the contact number above with lab results.

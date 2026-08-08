@@ -1,0 +1,52 @@
+{
+  "fixture_id": "synthetic_prose_05",
+  "group": "synthetic_prose",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Tomás Herrera",
+      "start": 90,
+      "end": 103
+    },
+    {
+      "canonical_type": "PHONE_NUMBER",
+      "value": "(305) 555-0126",
+      "start": 121,
+      "end": 135
+    },
+    {
+      "canonical_type": "EMAIL_ADDRESS",
+      "value": "t.herrera@example.com",
+      "start": 143,
+      "end": 164
+    },
+    {
+      "canonical_type": "GEOLOCATION",
+      "value": "25.7907, -80.1300",
+      "start": 276,
+      "end": 293
+    },
+    {
+      "canonical_type": "HEALTH_CONDITION",
+      "value": "whiplash injury",
+      "start": 314,
+      "end": 329
+    },
+    {
+      "canonical_type": "CREDIT_CARD_NUMBER",
+      "value": "5555 5555 5555 4444",
+      "start": 416,
+      "end": 435
+    },
+    {
+      "canonical_type": "PHONE_NUMBER",
+      "value": "(305) 555-0126",
+      "start": 510,
+      "end": 524
+    }
+  ],
+  "notes": "Insurance claim. Duplicate occurrence of the same PHONE_NUMBER value (Tier-1 duplicate requirement). GEOLOCATION as lat/long coordinates."
+}

@@ -1,0 +1,22 @@
+{
+  "fixture_id": "idiom_02",
+  "group": "idiom",
+  "created_at": "2026-08-07",
+  "generator_version": "1",
+  "expect": "processed",
+  "entities": [
+    {
+      "canonical_type": "PERSON_NAME",
+      "value": "Derek Whitcombe",
+      "start": 50,
+      "end": 65
+    },
+    {
+      "canonical_type": "CREDIT_CARD_NUMBER",
+      "value": "4427",
+      "start": 158,
+      "end": 162
+    }
+  ],
+  "notes": "Idiom: card-last-four ('Visa ending in 4427'). Labeled CREDIT_CARD_NUMBER as a PARTIAL value — only the last four digits appear in the document."
+}
