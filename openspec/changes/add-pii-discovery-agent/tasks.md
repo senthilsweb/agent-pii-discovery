@@ -26,11 +26,11 @@
 - [x] Gate: L1 unit tests green in CI (57 tests; first green run 2026-08-07)
 
 ### Phase 2 — Claude Managed Agent
-- [ ] Apply environment + agent YAML; store ids (never create in request path)
-- [ ] Host-side custom tools: s3_put/s3_get/cache_lookup/persist_result/create_run
-- [ ] Session client (stream-first, terminal-idle gate, custom-tool round-trips)
-- [ ] Subagent roster wired (doc-extractor / pii-genai-scanner / report-assembler)
-- [ ] Gate: L2 trajectory + schema evals green
+- [x] Apply environment + agent YAML via `scripts/apply_control_plane.sh`; ids in `agent/applied.json` (never create in request path)
+- [x] Host-side custom tools: cache_lookup / persist_result (s3_get/create_run dropped — the client mounts the document as a session resource and the manifest carries scan_id; the S3 mirror happens host-side inside persist_result)
+- [x] Session client (consolidation on connect, terminal-idle gate, custom-tool round-trips, post-idle poll) + `client.scan` CLI with client-side cache short-circuit
+- [x] Subagent roster wired (doc-extractor / pii-genai-scanner / report-assembler); reject trajectory verified end-to-end (`sesn_01PmKunz…`, 2026-08-07)
+- [x] Gate: L2 trajectory + schema evals green — verified on real sessions 2026-08-07: reject trajectory (`sesn_01PmKunz…`: clean bash trail, one persist) and full scan (`sesn_014W2bpr…`: correct step order, schema valid, all excerpts grounded, one persist), assertions replayed from archived event history. Clean-fixture Tier-1 FP run and the pytest-form rerun deferred to the Phase 3 budgeted round (owner credit constraint).
 
 ### Phase 3 — GenAI path + model switching
 - [ ] `detect_pii_genai` tool (structured output, provider-agnostic, `MODEL_PII_EXTRACTOR`)
