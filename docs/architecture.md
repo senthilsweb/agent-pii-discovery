@@ -12,7 +12,9 @@ flowchart TB
         CK --> CACHE{cache lookup<br/>checksum + pipeline_version}
         CACHE -- hit --> RES[return stored result<br/>emit cache_hit trace]
         FWD[trace forwarder<br/>events → OpenInference → Arize]
-        TOOLS[host-side tools<br/>s3_get · cache_lookup · persist_result]
+        JUDGE[judge + push<br/>evals/judge — R1-R6 → eval_scores → Arize]
+        TOOLS[host-side custom tools<br/>cache_lookup · persist_result]
+        UP[Files API upload<br/>mounted as a session resource]
     end
     subgraph cma [Claude Managed Agents - Anthropic-hosted]
         ORCH[pii-orchestrator<br/>coordinator, claude-opus-5]
@@ -28,12 +30,15 @@ flowchart TB
     subgraph arize [Arize AX]
         TR[traces] --> OE[online evals R1–R6] --> MON[drift + cost monitors]
     end
-    CACHE -- miss --> ORCH
+    CACHE -- miss --> UP --> ORCH
     ORCH --- EXT & SCAN & REP
     ORCH -.bash/files.-> SBX
     ORCH -.custom tool calls.-> TOOLS
     TOOLS --> S3 & DB
     cma ==SSE session events==> FWD ==OTLP==> TR
+    FWD -.root span id.-> JUDGE
+    JUDGE --> DB
+    JUDGE ==update_evaluations==> TR
 ```
 
 ## Tech stack
@@ -51,7 +56,7 @@ harness change unchanged.
 | Extraction model | env-resolved (`MODEL_PII_EXTRACTOR`) | The one generative step; Claude / GPT-class / DeepSeek |
 | Deterministic engine | Microsoft Presidio + regex | The no-LLM baseline path |
 | Client | Python 3.12 | Session driver, host-side tools, forwarder, eval harness |
-| Storage | S3 (hive partitions) + DuckDB (ANSI-portable) | Uploads/results; scans/findings/eval scores |
+| Storage | S3-compatible (hive partitions) + DuckDB (ANSI-portable) | Uploads/results; scans/findings/eval scores. Self-hosted MinIO in this deployment, [ADR 0003](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/adr/0003-minio-object-storage.md) |
 | Observability | OpenInference/OTel → Arize AX | Traces, online evals, drift + cost monitors |
 
 ## Agent flow — the three legal trajectories
@@ -63,10 +68,17 @@ HARD eval failure):
 1. **Cache hit** — `cache_lookup` answers; no document fetch, no scan.
 2. **Columnar reject** — the structure gate classifies the file as columnar;
    result is `skipped_out_of_scope`; no extraction, chunking, or detection.
-3. **Full scan** — `s3_get` → doc-extractor (text layer, OCR fallback) →
+3. **Full scan** — the client uploads the document via the Files API and
+   mounts it as a session resource before the session starts (no
+   in-session fetch step) → doc-extractor (text layer, OCR fallback) →
    chunk → engine paths per manifest (Presidio in-sandbox; one GenAI scanner
    thread per model) → normalize → assemble → `persist_result` →
    report-assembler.
+
+After the session ends, the client (still holding the document on disk)
+forwards the trace and runs the local judge + Arize push — see
+[Evals § live judge](evals.md#the-live-judge-l4) and
+[ADR 0002](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/adr/0002-arize-eval-push-not-native-judge.md).
 
 ## Tool calling
 

@@ -36,6 +36,7 @@ class UploadOutcome:
 
 def _client():
     import boto3  # lazy: optional [s3] dependency
+    from botocore.config import Config
 
     kwargs: dict = {"region_name": os.environ.get("OBJECT_STORE_REGION", "us-east-1")}
     if os.environ.get("OBJECT_STORE_ENDPOINT"):
@@ -43,6 +44,10 @@ def _client():
     if os.environ.get("OBJECT_STORE_ACCESS_KEY_ID"):
         kwargs["aws_access_key_id"] = os.environ["OBJECT_STORE_ACCESS_KEY_ID"]
         kwargs["aws_secret_access_key"] = os.environ.get("OBJECT_STORE_SECRET_ACCESS_KEY", "")
+    # MinIO (and most self-hosted S3-compatible stores) can't do
+    # virtual-hosted-style bucket DNS resolution — path-style is required.
+    if os.environ.get("OBJECT_STORE_FORCE_PATH_STYLE", "").lower() in ("1", "true", "yes"):
+        kwargs["config"] = Config(s3={"addressing_style": "path"})
     return boto3.client("s3", **kwargs)
 
 

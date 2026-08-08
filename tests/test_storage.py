@@ -122,3 +122,19 @@ def test_unjudged_scans_excludes_judged_and_non_processed():
 
     pending = [scan_id for scan_id, _ in db.unjudged_scans(conn)]
     assert pending == ["s_processed"]  # not failed (nothing to judge), not already-judged
+
+
+def test_s3_client_uses_path_style_addressing_when_configured(monkeypatch):
+    # MinIO (and most self-hosted S3-compatible stores) rejects
+    # virtual-hosted-style requests; regression guard for that fix.
+    monkeypatch.setenv("OBJECT_STORE_ENDPOINT", "https://minio.example.com")
+    monkeypatch.setenv("OBJECT_STORE_FORCE_PATH_STYLE", "true")
+    client = s3._client()
+    assert client.meta.config.s3["addressing_style"] == "path"
+
+
+def test_s3_client_defaults_to_virtual_style_without_the_flag(monkeypatch):
+    monkeypatch.setenv("OBJECT_STORE_ENDPOINT", "https://s3.amazonaws.com")
+    monkeypatch.delenv("OBJECT_STORE_FORCE_PATH_STYLE", raising=False)
+    client = s3._client()
+    assert (client.meta.config.s3 or {}).get("addressing_style") != "path"

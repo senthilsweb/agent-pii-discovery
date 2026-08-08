@@ -67,6 +67,14 @@ The owner already operates Arize cloud, and its online-eval tasks are the
 live-eval mechanism this project exists to learn. Phoenix remains a dev-only
 fan-out. See [ADR 0001](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/adr/0001-claude-managed-agents-and-arize.md).
 
+**Why MinIO instead of AWS S3, and why the shared `ai-agents` bucket?**
+`pipeline/storage/s3.py` was built S3-compatible from the start, so pointing
+it at the owner's existing self-hosted MinIO needed no code change beyond an
+addressing-style fix MinIO requires and AWS S3 doesn't. The bucket is shared
+with other monorepo agents; this project owns its own top-level prefixes and
+never touches theirs. See
+[ADR 0003](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/adr/0003-minio-object-storage.md).
+
 **Why don't the R1–R6 judges run inside Arize?**
 Three of the six criteria (R2, R3, R6) need to see the excerpt or document
 passage to judge, and production traces deliberately carry none of it. The

@@ -62,7 +62,7 @@ span attributes before returning to normal traffic.
 | Method | When to use | Status |
 |---|---|---|
 | CLI (`python -m client.scan <file> --user <login>`) | One-off scans, scripting | Planned — Phase 2 ([task register](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/changes/add-pii-discovery-agent/tasks.md)) |
-| Result JSON on S3 (`results/user_login=…/…/result.json`) | Downstream systems consuming per-document results | Contract defined (PRD §8–9) |
+| Result JSON on S3 (`results/user_login=…/…/result.json`) | Downstream systems consuming per-document results | Live — self-hosted MinIO, [ADR 0003](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/adr/0003-minio-object-storage.md), verified 2026-08-08 |
 | DuckDB / SQL over the operational tables | Ad-hoc analysis, the flagged-review queue | Contract defined (PRD §9.2) |
 | Public parquet export (no excerpts) | Zero-infrastructure dashboards; `SELECT … FROM 'https://…/findings.parquet'` | Planned — Phase 4+ |
 | Trace forwarding (`python -m client.forwarder <session_id>`) | Ship any session's trace (archived included — a free API read) to Arize/OTLP/Phoenix | Working; runs automatically after each scan |

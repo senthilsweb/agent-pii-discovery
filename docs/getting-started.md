@@ -10,9 +10,9 @@ know where every artifact of the current phase lives.
 | Python 3.12+ | Pipeline scripts, client, eval harness |
 | `ant` CLI | Applies the Managed Agents control plane from `agent/*.yaml` |
 | Anthropic API key (Managed Agents beta) | Runs sessions; orchestrator model |
-| AWS account + S3 bucket | Upload and result storage |
+| S3-compatible object store | Upload and result storage. Self-hosted MinIO in this deployment ([ADR 0003](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/adr/0003-minio-object-storage.md)) — AWS S3 also works, no code change |
 | Arize AX account (space + API key) | Trace ingest and online evals |
-| A `MODEL_PII_EXTRACTOR` provider key | The one generative step (any supported provider) |
+| `MODEL_PII_EXTRACTOR` + `MODEL_JUDGE` provider keys | The one generative step and the live judge (any supported provider; must differ from each other and from the orchestrator) |
 
 ## Installation
 

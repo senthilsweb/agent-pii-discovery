@@ -22,6 +22,7 @@
 - [x] `pipeline/`: checksum, structure gate, extract (text layer → OCR fallback), chunk, presidio_scan, normalize, assemble + `scan.py` CLI running the three trajectories
 - [x] Port taxonomy/alias/compliance YAMLs (verbatim) + pydantic schemas
 - [x] S3 uploader with `user_login`/`dt`/`sha256` partitioning (env-gated no-op, never-throw)
+- [x] **Live storage backend wired 2026-08-08** ([ADR 0003](../../adr/0003-minio-object-storage.md)): self-hosted MinIO, shared `ai-agents` bucket, credentials reused from `linkedin-cover-generator`. Fixed a real bug found in the process — `s3.py`'s client had no path-style addressing, which MinIO requires (`OBJECT_STORE_FORCE_PATH_STYLE`). Verified with a real put/list/delete round trip and a full deterministic-pipeline scan (`scan_51a46c946b8f`) — both `uploads/` and `results/` objects landed correctly, no prefix collision with other agents' `runs/` data.
 - [x] DuckDB schema + `db.py` seam + cache lookup on `(checksum, pipeline_version)`
 - [x] Gate: L1 unit tests green in CI (57 tests; first green run 2026-08-07)
 

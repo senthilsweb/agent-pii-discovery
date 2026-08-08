@@ -33,10 +33,11 @@ variable.
 
 | Variable | Required | Meaning |
 |---|---|---|
-| `OBJECT_STORE_BUCKET` | yes | S3 bucket. Unset = uploads are a no-op (dev). |
+| `OBJECT_STORE_BUCKET` | yes | S3 bucket. Unset = uploads are a no-op (dev). Currently the shared `ai-agents` bucket — this project owns the `uploads/`/`results/`/`exports/` prefixes only ([ADR 0003](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/adr/0003-minio-object-storage.md)). |
 | `OBJECT_STORE_REGION` | no | Default `us-east-1`. |
 | `OBJECT_STORE_ACCESS_KEY_ID` / `OBJECT_STORE_SECRET_ACCESS_KEY` | yes | Held by the client only; never enter the sandbox. |
-| `OBJECT_STORE_ENDPOINT` | no | MinIO/localstack endpoint for local dev. |
+| `OBJECT_STORE_ENDPOINT` | no | S3-compatible endpoint. Self-hosted MinIO in this deployment (ADR 0003) — AWS S3 needs no override. |
+| `OBJECT_STORE_FORCE_PATH_STYLE` | no | `true` for MinIO and most self-hosted S3-compatible stores — they reject virtual-hosted-style requests. Leave unset for AWS S3. |
 | `PII_DB_PATH` | no | DuckDB file path (default `data/pii.duckdb`). Production swaps this for a Postgres/MySQL DSN behind the same seam. |
 
 ## Observability
