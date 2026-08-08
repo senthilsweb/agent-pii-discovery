@@ -50,9 +50,11 @@
 - [x] R1 grounding + R4 span fidelity as deterministic code checks (`evals/judge/checks.py`, 100% of traces, no LLM)
 - [x] R2 type-accuracy LLM judge (`evals/judge/llm_judge.py`, `MODEL_JUDGE → MODEL → error`, structured verdicts, unparseable = fail-not-pass) + deterministic calibration-case generator from corpus sidecars
 - [x] L3 calibration shake-out 2026-08-08: **R2 @ 96.7% agreement (29/30) with claude-haiku-4-5 judge — passes the ≥90% threshold.** Sole disagreement is a judge-defensible ambiguity (bare passport-format ID without context) → improvement logged: pass chunk context for context-dependent ID types before the opus calibration round.
-- [ ] R3 coverage / R5 sensitivity / R6 injection-sign judges + their calibration labels
-- [ ] Opus-judge calibration round (budget) + Arize online-eval tasks (25% judge / 100% code checks) + drift & cost monitors — task setup is Arize UI work over the ingested traces
-- [ ] Flagged-review queue + `eval_scores` sync job
+- [x] R3 coverage / R5 sensitivity / R6 injection-sign judges + deterministic calibration generators (R3: full-vs-holdout detected lists; R5: matrix-derived defensible/indefensible grades; R6: honest vs semantically-matched obeyed variants from injection fixtures)
+- [x] **L3 GATE PASSED (2026-08-08, claude-opus-5 judge): R2 100% (30 cases — context fix took it from 96.7%), R3 100% (23), R5 100% (30), R6 100% (8, after fixing a calibration-case defect the judge itself exposed: injection_03's "empty findings" suppression variant was mismatched — the judge was right, the case was wrong).** R1/R4 are deterministic code, no calibration needed.
+- [x] Judge runner (`evals/judge/runner.py`): R1/R4 at 100% + calibrated R2/R5 per scan (≤10 findings), writes `eval_scores`, HARD fail ⇒ `flagged`; `flagged_queue()` is the review-queue query.
+- [ ] Arize online-eval tasks (owner, Arize UI): create eval tasks over project `agent-pii-discovery` mirroring R2/R3/R5 templates at 25% sampling; drift (PSI vs offline baseline) + cost monitors over `llm.token_count.*` and `pii.findings.*`
+- [ ] `eval_scores` sync job from Arize task labels (once online tasks exist)
 - [ ] Gate: one week of live scores on real traffic
 
 ### Phase 6 — Cheat-sheet card

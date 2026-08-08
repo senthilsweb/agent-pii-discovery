@@ -2,9 +2,12 @@
 
 import pytest
 
-from evals.judge.calibrate import build_cases, run_calibration
+from evals.judge.calibrate import (
+    BUILDERS, build_r2_cases, build_r3_cases, build_r5_cases, build_r6_cases,
+    run_calibration,
+)
 from evals.judge.checks import check_grounding, check_span_fidelity
-from evals.judge.llm_judge import TypeVerdict, resolve_judge_model
+from evals.judge.llm_judge import resolve_judge_model
 from pipeline.schemas import (
     ComplianceImpact, DocumentMeta, DocumentResult, NormalizedFinding, RunInfo, Span,
 )
@@ -30,8 +33,7 @@ def _result(excerpts, spans=None):
 
 
 def test_r1_grounded_passes_and_normalizes_whitespace():
-    v = check_grounding(_result(["priya@example.com", "Priya  Raman"]), TEXT)
-    assert v.passed
+    assert check_grounding(_result(["priya@example.com", "Priya  Raman"]), TEXT).passed
 
 
 def test_r1_fabricated_excerpt_fails():
@@ -51,48 +53,71 @@ def test_r4_wrong_span_fails():
     assert not v.passed
 
 
-def test_calibration_cases_deterministic_and_balanced():
-    a, b = build_cases(30), build_cases(30)
-    assert [(c.excerpt, c.candidate_type) for c in a] == [(c.excerpt, c.candidate_type) for c in b]
-    assert len(a) == 30
-    negatives = [c for c in a if not c.expected_correct]
-    assert len(negatives) >= 10  # meaningful negative coverage
+def test_case_builders_deterministic():
+    for name, builder in BUILDERS.items():
+        a, b = builder(20), builder(20)
+        assert [(c.payload, c.expected) for c in a] == \
+               [(c.payload, c.expected) for c in b], name
 
 
-class OracleJudge:
-    """Fake client that answers from the cases' own ground truth."""
+def test_r2_cases_balanced_with_context():
+    cases = build_r2_cases(30)
+    assert len(cases) == 30
+    assert sum(1 for c in cases if not c.expected) >= 10
+    assert any(c.payload.get("context") for c in cases)
 
-    def __init__(self, cases):
-        truth = {(repr(c.excerpt), c.candidate_type): c.expected_correct for c in cases}
+
+def test_r3_cases_pair_full_and_holdout():
+    cases = build_r3_cases(10)
+    assert any(c.expected for c in cases) and any(not c.expected for c in cases)
+    holdout = next(c for c in cases if c.expected)
+    full = next(c for c in cases if c.source == holdout.source and not c.expected)
+    assert len(holdout.payload["detected"]) < len(full.payload["detected"])
+
+
+def test_r5_cases_pair_defensible_and_not():
+    cases = build_r5_cases(40)
+    lows = [c for c in cases if c.payload["sensitivity"] == "low"]
+    assert lows and all(not c.expected for c in lows)
+
+
+def test_r6_cases_honest_vs_obeyed():
+    cases = build_r6_cases(10)
+    assert any(c.expected for c in cases) and any(not c.expected for c in cases)
+    obeyed_zero = [c for c in cases if c.expected and "none" in c.payload["report"]]
+    assert obeyed_zero, "zero-findings obeyed variant must exist"
+
+
+class OracleClient:
+    """Fake Anthropic client answering from a per-call truth list."""
+
+    def __init__(self, answers):
         outer = self
+        self._answers = list(answers)
 
         class _Messages:
             def parse(self, **kwargs):
-                content = kwargs["messages"][0]["content"]
-                excerpt_repr, candidate = content.split("Excerpt: ", 1)[1].rsplit(
-                    "\nCandidate type: ", 1)
+                truth = outer._answers.pop(0)
+                out_type = kwargs["output_format"]
+                fields = out_type.model_fields
+                payload = {"reason": "oracle",
+                           ("correct" if "correct" in fields else "answer"): truth}
                 class M:  # noqa: N801
-                    parsed_output = TypeVerdict(
-                        correct=outer._truth[(excerpt_repr, candidate)], reason="oracle")
+                    parsed_output = out_type(**payload)
                 return M()
 
-        self._truth = truth
         self.messages = _Messages()
 
 
-def test_agreement_math_with_perfect_judge():
-    cases = build_cases(20)
-    summary = run_calibration(cases, model="fake", client=OracleJudge(cases))
-    assert summary["agreement"] == 1.0 and summary["passes"]
-
-
-def test_agreement_math_flags_a_wrong_judge():
-    cases = build_cases(20)
-    oracle = OracleJudge(cases)
-    flipped = {k: not v for k, v in oracle._truth.items()}
-    oracle._truth = flipped
-    summary = run_calibration(cases, model="fake", client=oracle)
-    assert summary["agreement"] == 0.0 and not summary["passes"]
+@pytest.mark.parametrize("criterion", ["R2", "R3", "R5", "R6"])
+def test_agreement_math_perfect_and_flipped(criterion):
+    cases = BUILDERS[criterion](12)
+    perfect = run_calibration(criterion, cases, model="fake",
+                              client=OracleClient([c.expected for c in cases]))
+    assert perfect["agreement"] == 1.0 and perfect["passes"]
+    flipped = run_calibration(criterion, cases, model="fake",
+                              client=OracleClient([not c.expected for c in cases]))
+    assert flipped["agreement"] == 0.0 and not flipped["passes"]
 
 
 def test_judge_model_resolution(monkeypatch):
