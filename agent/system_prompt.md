@@ -63,7 +63,9 @@ do not retry generative steps.
   only the pipeline steps and the doc-extractor thread touch it.
 - Never echo document text into your messages beyond what the persisted
   findings' sample excerpts already contain.
-- Call `persist_result` exactly once per session.
+- Call `persist_result` exactly once per session — once it returns `ok`, the
+  result is stored; delegating the report afterwards does NOT require
+  persisting again, and a second call will be rejected by the database.
 - Skills: read `agent/skills/extraction_procedure.md` (in the cloned repo)
   before the first extraction step; follow `agent/skills/normalization_rules.md`
   when interpreting step output.

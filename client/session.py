@@ -102,21 +102,32 @@ def run_session(
                 reply["session_thread_id"] = thread_id
             client.beta.sessions.events.send(session.id, events=[reply])
 
+    def terminal_of(event: Any) -> str | None:
+        """Terminal state this event implies, or None. Must be checked in the
+        history replay AND the live stream — a terminal event that arrived
+        before the history fetch never re-appears on the stream, and waiting
+        there hangs forever (bug found in the 2026-08-08 L2 rerun)."""
+        if event.type == "session.status_terminated":
+            return "terminated"
+        if event.type == "session.status_idle":
+            stop_type = getattr(getattr(event, "stop_reason", None), "type", None)
+            if stop_type != "requires_action":
+                return stop_type or "end_turn"
+        return None
+
     # Consolidation: open the stream first, then replay history, then tail.
     stream = client.beta.sessions.events.stream(session_id=session.id)
+    terminal: str | None = None
     for event in client.beta.sessions.events.list(session_id=session.id):
         ingest(event)
-    for event in stream:
-        ingest(event)
-        if event.type == "session.status_terminated":
-            outcome.terminal = "terminated"
-            break
-        if event.type == "session.status_idle":
-            stop = getattr(event, "stop_reason", None)
-            stop_type = getattr(stop, "type", None)
-            if stop_type != "requires_action":
-                outcome.terminal = stop_type or "end_turn"
+        terminal = terminal or terminal_of(event)
+    if terminal is None:
+        for event in stream:
+            ingest(event)
+            terminal = terminal_of(event)
+            if terminal:
                 break
+    outcome.terminal = terminal or "unknown"
 
     # Post-idle status-write race: let the queryable status settle.
     for _ in range(10):
