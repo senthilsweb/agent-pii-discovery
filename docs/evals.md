@@ -173,13 +173,30 @@ Steps below assume traces are already flowing into project
 
 **3. Local push job (all six criteria — the primary mechanism)**
 
-Not yet built — tracked in the
-[openspec task register](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/changes/add-pii-discovery-agent/tasks.md).
-When it lands: for each persisted scan, `evals/judge/runner.py` produces a
-dataframe of `context.span_id` + `eval.<name>.{label,score,explanation}` per
-criterion and calls `arize.ArizeClient(...).spans.update_evaluations(...)`.
-This is the mechanism ADR 0002 designates as primary; a scan's root
-`span_id` (captured at forward time) is the join key.
+Built (`evals/judge/push.py`), running automatically at the end of every
+`client.scan` invocation, right after the trace forwarder — while the
+original document is still on disk, which is the whole point (§ above).
+
+- R1 (grounding) and R4 (span fidelity) run on **100% of `processed` scans**
+  — free code checks.
+- R2, R3, R5, R6 run on a **sampled subset** (`PII_JUDGE_SAMPLE_RATE`,
+  default 25% per PRD §10.4) — the sampling decision is a deterministic hash
+  of `scan_id`, so a given scan always samples the same way across reruns.
+- Verdicts are written to `eval_scores` locally, then pushed to Arize as one
+  wide row keyed by the scan's root `span_id` (captured from the forwarder
+  and persisted via `db.record_span()`) via
+  `arize.ArizeClient(...).spans.update_evaluations(...)`.
+- Skipped/failed scans aren't judged (no findings to score). Missing
+  `ARIZE_SPACE_ID`/`ARIZE_API_KEY` or the `arize`/`pandas` packages (the
+  `[evaluate]` extra) degrades to "judged locally, not pushed" — logged, not
+  fatal.
+
+Verified end-to-end 2026-08-08 on a real scan (`scan_e0c77560b026`): all six
+criteria ran with a real `claude-opus-5` judge, correctly caught two genuine
+Presidio false positives (a "ten business days" phrase mislabeled
+`DATE_OF_BIRTH`, and an ambiguous organization fragment the judge refused to
+force a verdict on rather than guess) and labeled the scan `flagged`, and the
+verdicts landed in Arize (`spans_updated=1`).
 
 **4. Drift and cost monitors (no eval task needed)**
 

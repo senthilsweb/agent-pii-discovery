@@ -51,13 +51,16 @@ EVENTS = [
 
 def test_span_mapping(in_memory_provider):
     provider, exporter = in_memory_provider
-    n = forward_session(EVENTS, scan_meta={"session_id": "sesn_1", "user_login": "u"},
-                        provider=provider)
+    summary = forward_session(EVENTS, scan_meta={"session_id": "sesn_1", "user_login": "u"},
+                              provider=provider)
     provider.force_flush()
     spans = {s.name: s for s in exporter.get_finished_spans()}
-    assert n == len(spans) == 4  # root + llm + 2 tools
+    assert summary["span_count"] == len(spans) == 4  # root + llm + 2 tools
+    assert len(summary["root_span_id"]) == 16 and len(summary["root_trace_id"]) == 32
 
     root = spans["pii_scan.session"]
+    root_ctx = root.get_span_context()
+    assert format(root_ctx.span_id, "016x") == summary["root_span_id"]
     assert root.attributes["openinference.span.kind"] == "AGENT"
     assert root.attributes["pii.findings.EMAIL_ADDRESS"] == 3
     assert root.attributes["pii.sensitivity.EMAIL_ADDRESS"] == "medium"
@@ -104,7 +107,8 @@ def test_no_backend_is_a_warning_not_a_crash(monkeypatch, caplog):
                 "OTEL_EXPORTER_OTLP_ENDPOINT", "PHOENIX_COLLECTOR_ENDPOINT"):
         monkeypatch.delenv(var, raising=False)
     assert build_exporters() == []
-    assert forward_session(EVENTS) == 0  # logs one warning, returns
+    summary = forward_session(EVENTS)  # logs one warning, returns a zeroed summary
+    assert summary == {"span_count": 0, "root_span_id": None, "root_trace_id": None}
 
 
 def test_arize_exporter_configured_from_env(monkeypatch):

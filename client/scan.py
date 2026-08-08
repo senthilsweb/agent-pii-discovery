@@ -22,10 +22,19 @@ from anthropic import Anthropic
 from pipeline import TAXONOMY_VERSION
 from pipeline.checksum import compute_pipeline_version, sha256_file
 from pipeline.engine import resolve_pii_engine, uses_genai
+from pipeline.schemas import DocumentResult
 from pipeline.storage import db
 from client.session import run_session
 
 APPLIED = Path(__file__).resolve().parent.parent / "agent" / "applied.json"
+
+
+def _load_result(conn, scan_id: str) -> DocumentResult | None:
+    """Fetch a persisted result regardless of status (cache_lookup is
+    processed-only by design — judging needs reject/failed rows too, to skip
+    them explicitly rather than silently finding nothing)."""
+    row = conn.execute("SELECT result_json FROM scans WHERE scan_id = ?", [scan_id]).fetchone()
+    return DocumentResult.model_validate_json(row[0]) if row and row[0] else None
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -75,28 +84,43 @@ def main(argv: list[str] | None = None) -> int:
             [e.model_dump(mode="json") for e in outcome.events], indent=2, default=str))
 
     # Phase 4: forward the trace (env-gated inside; degrades to one warning).
+    forward_summary = {"span_count": 0, "root_span_id": None, "root_trace_id": None}
     try:
         from client.forwarder import forward_session
-        forward_session(outcome.events, scan_meta={
+        forward_summary = forward_session(outcome.events, scan_meta={
             "session_id": outcome.session_id, "user_login": args.user,
             "checksum": checksum, "cache_hit": False,
         })
     except Exception as exc:  # noqa: BLE001 — telemetry never fails a scan
         print(f"forwarder warning: {exc}", file=sys.stderr)
 
-    persisted = db.cache_lookup(conn, checksum, pipeline_version)
-    row = conn.execute(
-        "SELECT status FROM scans WHERE scan_id = ?", [manifest["scan_id"]]
-    ).fetchone()
+    persisted = _load_result(conn, manifest["scan_id"])
+    if persisted is not None:
+        db.record_span(conn, manifest["scan_id"],
+                       forward_summary["root_span_id"], forward_summary["root_trace_id"])
+
+    # Phase 5: judge + push (env-gated inside; degrades to one warning; the
+    # document is still on disk here, which is why this runs now rather than
+    # as a deferred batch job — see ADR 0002).
+    judge_summary = {"judged": False, "pushed": False}
+    if persisted is not None:
+        try:
+            from evals.judge.push import judge_and_push
+            judge_summary = judge_and_push(persisted, args.file,
+                                           forward_summary["root_span_id"], conn)
+        except Exception as exc:  # noqa: BLE001 — never fails a scan
+            print(f"judge_push warning: {exc}", file=sys.stderr)
+
     print(json.dumps({
         "cache_hit": False,
         "scan_id": manifest["scan_id"],
         "session_id": outcome.session_id,
         "terminal": outcome.terminal,
-        "persisted_status": row[0] if row else None,
+        "persisted_status": persisted.document.processing_status if persisted else None,
         "findings": {f.canonical_type: f.occurrences for f in persisted.findings} if persisted else None,
+        "eval": judge_summary,
     }, indent=2))
-    return 0 if row else 1
+    return 0 if persisted else 1
 
 
 if __name__ == "__main__":

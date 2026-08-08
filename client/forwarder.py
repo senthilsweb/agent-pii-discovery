@@ -102,13 +102,18 @@ def _provider(exporters: list):
 # --- the mapping -----------------------------------------------------------
 
 def forward_session(events: list, scan_meta: dict | None = None,
-                    provider=None) -> int:
-    """Convert one session's events into spans; returns the span count.
+                    provider=None) -> dict:
+    """Convert one session's events into spans.
 
     `provider` is injectable for tests (in-memory exporter); when None, one is
     built from env and force-flushed before returning. With no backend
-    configured this logs one warning and returns 0.
+    configured this logs one warning and returns a zeroed summary.
+
+    Returns `{"span_count": int, "root_span_id": str|None, "root_trace_id": str|None}`.
+    The root ids are the Arize join key for the local judge push
+    (`evals/judge/push.py`) — hex-formatted OTel span/trace ids.
     """
+    empty = {"span_count": 0, "root_span_id": None, "root_trace_id": None}
     own_provider = provider is None
     if own_provider:
         exporters = build_exporters()
@@ -116,14 +121,14 @@ def forward_session(events: list, scan_meta: dict | None = None,
             log.warning("forwarder: no telemetry backend configured "
                         "(ARIZE_SPACE_ID/ARIZE_API_KEY, OTEL_EXPORTER_OTLP_ENDPOINT, "
                         "or PHOENIX_COLLECTOR_ENDPOINT) — skipping")
-            return 0
+            return empty
         provider = _provider(exporters)
     tracer = provider.get_tracer("pii.forwarder")
 
     times = [_ns(_get(e, "processed_at")) for e in events]
     times = [t for t in times if t]
     if not times:
-        return 0
+        return empty
     t_start, t_end = min(times), max(times)
 
     meta = dict(scan_meta or {})
@@ -148,6 +153,9 @@ def forward_session(events: list, scan_meta: dict | None = None,
 
     count = 0
     root = tracer.start_span("pii_scan.session", start_time=t_start)
+    root_ctx = root.get_span_context()
+    root_span_id = format(root_ctx.span_id, "016x")
+    root_trace_id = format(root_ctx.trace_id, "032x")
     root.set_attribute("openinference.span.kind", "AGENT")
     for k, v in meta.items():
         if v is not None:
@@ -211,7 +219,7 @@ def forward_session(events: list, scan_meta: dict | None = None,
     if own_provider:
         provider.force_flush()
         provider.shutdown()
-    return count
+    return {"span_count": count, "root_span_id": root_span_id, "root_trace_id": root_trace_id}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -231,9 +239,9 @@ def main(argv: list[str] | None = None) -> int:
     meta = {"session_id": args.session_id}
     if args.user:
         meta["user_login"] = args.user
-    n = forward_session(events, scan_meta=meta)
-    print(json.dumps({"session_id": args.session_id, "events": len(events), "spans": n}))
-    return 0 if n else 1
+    summary = forward_session(events, scan_meta=meta)
+    print(json.dumps({"session_id": args.session_id, "events": len(events), **summary}))
+    return 0 if summary["span_count"] else 1
 
 
 if __name__ == "__main__":

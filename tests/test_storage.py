@@ -88,3 +88,37 @@ def test_s3_noop_without_bucket(monkeypatch, tmp_path):
     f.write_text("hi")
     outcome = s3.put_file(f, "uploads/whatever")
     assert outcome.skipped and not outcome.uploaded and not outcome.failed
+
+
+def test_record_span_and_mark_judged():
+    conn = db.connect(":memory:")
+    r = _result()
+    db.upsert_document(conn, r, None)
+    db.insert_scan(conn, r)
+
+    db.record_span(conn, r.run.scan_id, "span_abc", "trace_xyz")
+    row = conn.execute(
+        "SELECT root_span_id, root_trace_id, judged_at FROM scans WHERE scan_id = ?",
+        [r.run.scan_id],
+    ).fetchone()
+    assert row[0] == "span_abc" and row[1] == "trace_xyz" and row[2] is None
+
+    db.mark_judged(conn, r.run.scan_id)
+    judged_at = conn.execute(
+        "SELECT judged_at FROM scans WHERE scan_id = ?", [r.run.scan_id]
+    ).fetchone()[0]
+    assert judged_at is not None
+
+
+def test_unjudged_scans_excludes_judged_and_non_processed():
+    conn = db.connect(":memory:")
+    processed = _result(scan_id="s_processed", status="processed")
+    failed = _result(scan_id="s_failed", checksum="d" * 64, status="failed")
+    already_judged = _result(scan_id="s_judged", checksum="e" * 64, status="processed")
+    for r in (processed, failed, already_judged):
+        db.upsert_document(conn, r, None)
+        db.insert_scan(conn, r)
+    db.mark_judged(conn, already_judged.run.scan_id)
+
+    pending = [scan_id for scan_id, _ in db.unjudged_scans(conn)]
+    assert pending == ["s_processed"]  # not failed (nothing to judge), not already-judged

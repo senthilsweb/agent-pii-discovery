@@ -43,10 +43,13 @@ variable.
 
 | Variable | Required | Meaning |
 |---|---|---|
-| `ARIZE_SPACE_ID` / `ARIZE_API_KEY` | yes for live eval | Arize AX ingest. Missing = forwarder degrades to one logged warning, scans unaffected. |
+| `ARIZE_SPACE_ID` / `ARIZE_API_KEY` | yes for live eval | Arize AX ingest and the judge-verdict push. Missing = forwarder/push degrade to one logged warning, scans unaffected. |
+| `ARIZE_PROJECT_NAME` | no | Default `agent-pii-discovery`. Must match the project traces land in. |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` / `OTEL_EXPORTER_OTLP_HEADERS` | no | Generic OTLP fan-out target. |
 | `PHOENIX_COLLECTOR_ENDPOINT` | no | Dev-only local Phoenix second export. |
 | `TELEMETRY_RECORD_IO` | no | `false` in production — prompts/completions (document text) never leave for the trace backend. |
+| `MODEL_JUDGE` | yes for LLM judges | Judge model for R2/R3/R5/R6, falls back to `MODEL`. Must differ from the extractor under test — see [Evals](evals.md). |
+| `PII_JUDGE_SAMPLE_RATE` | no | Default `0.25` (PRD §10.4). Fraction of `processed` scans that get the four LLM judges; `1.0` forces every scan, `0.0` runs only the free R1/R4 code checks. Sampling is deterministic per `scan_id`, not random per run. |
 
 !!! warning "Arize AX requires `model_id`"
     Spans sent to `otlp.arize.com` must carry a `model_id` resource attribute

@@ -39,8 +39,16 @@ _DDL = [
         latency_ms       BIGINT,
         cost_usd         DOUBLE,
         started_at       TIMESTAMP NOT NULL,
-        ended_at         TIMESTAMP
+        ended_at         TIMESTAMP,
+        root_span_id     TEXT,
+        root_trace_id    TEXT,
+        judged_at        TIMESTAMP
     )""",
+    # Migration for DBs created before the eval-push columns existed —
+    # CREATE TABLE IF NOT EXISTS above is a no-op on an existing table.
+    "ALTER TABLE scans ADD COLUMN IF NOT EXISTS root_span_id TEXT",
+    "ALTER TABLE scans ADD COLUMN IF NOT EXISTS root_trace_id TEXT",
+    "ALTER TABLE scans ADD COLUMN IF NOT EXISTS judged_at TIMESTAMP",
     """CREATE TABLE IF NOT EXISTS findings (
         scan_id         TEXT NOT NULL,
         canonical_type  TEXT NOT NULL,
@@ -101,9 +109,17 @@ def upsert_document(conn: Any, result: DocumentResult, s3_key: str | None) -> No
 
 
 def insert_scan(conn: Any, result: DocumentResult, latency_ms: int | None = None) -> None:
-    """Persist one scan and its per-type finding rows."""
+    """Persist one scan and its per-type finding rows.
+
+    Explicit column list (not `INSERT INTO scans VALUES (...)`) so the
+    schema can grow columns — root_span_id/root_trace_id/judged_at, filled
+    in later by record_span()/mark_judged() — without this insert breaking.
+    """
     conn.execute(
-        "INSERT INTO scans VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        """INSERT INTO scans
+           (scan_id, checksum, pipeline_version, engine, models, session_id,
+            status, result_json, latency_ms, cost_usd, started_at, ended_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
         [
             result.run.scan_id, result.checksum, result.run.pipeline_version,
             result.run.engine, json.dumps(result.run.models), result.run.session_id,
@@ -134,3 +150,29 @@ def cache_lookup(conn: Any, checksum: str, pipeline_version: str) -> DocumentRes
     if row is None or row[0] is None:
         return None
     return DocumentResult.model_validate_json(row[0])
+
+
+def record_span(conn: Any, scan_id: str, root_span_id: str | None,
+                root_trace_id: str | None) -> None:
+    """Link a scan to its forwarded trace — the Arize push job's join key."""
+    conn.execute(
+        "UPDATE scans SET root_span_id = ?, root_trace_id = ? WHERE scan_id = ?",
+        [root_span_id, root_trace_id, scan_id],
+    )
+
+
+def mark_judged(conn: Any, scan_id: str) -> None:
+    """Record that the local judge + Arize push ran for this scan."""
+    conn.execute("UPDATE scans SET judged_at = ? WHERE scan_id = ?",
+                 [datetime.now(timezone.utc).replace(tzinfo=None), scan_id])
+
+
+def unjudged_scans(conn: Any, limit: int = 100) -> list[tuple[str, str | None]]:
+    """(scan_id, root_span_id) for processed scans not yet judged — resumable
+    backlog for the push job (e.g. after a mid-run crash)."""
+    return conn.execute(
+        """SELECT scan_id, root_span_id FROM scans
+           WHERE status = 'processed' AND judged_at IS NULL
+           ORDER BY started_at LIMIT ?""",
+        [limit],
+    ).fetchall()
