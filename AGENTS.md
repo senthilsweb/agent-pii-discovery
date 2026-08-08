@@ -69,9 +69,10 @@ L2 metric floors + L3 judge calibration ⇒ `verified`. No promotion on red.
 - **Credentials never enter the sandbox** — S3/DB access via host-side custom
   tools or vault egress substitution.
 
-## Run (target commands; wired up in Phase 1–2)
+## Run
 
-- Unit tests: `pytest -q`
-- Offline evals: `pytest evals/ -m offline` (one CI job per `PII_ENGINE` value)
-- Scan a document: `python -m client.scan <file> --user <login>`
-- Apply agent config: `cd agent && ant beta:agents create < pii-orchestrator.agent.yaml`
+- Install: `python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"`
+- L1 tests (57; no network/model/key): `.venv/bin/pytest`
+- Scan a document (deterministic path): `PII_ENGINE=presidio .venv/bin/python -m pipeline.scan <file> --user <login>` (prose scans need the `[presidio]` extra)
+- Corpus verifier: `python3 evals/corpus/verify.py`
+- Target for Phase 2+: offline evals `pytest evals/ -m offline` (one CI job per `PII_ENGINE` value); apply agent config `cd agent && ant beta:agents create < pii-orchestrator.agent.yaml`

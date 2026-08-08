@@ -1,0 +1,31 @@
+[project]
+name = "agent-pii-discovery"
+version = "0.1.0"
+description = "PII discovery agent on Claude Managed Agents with live eval in Arize AX. Phase 1: deterministic pipeline."
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "duckdb>=1.0",
+]
+
+[project.optional-dependencies]
+# The deterministic NER engine. Pulled in explicitly because the spaCy model
+# download needs network — L1 unit tests never require this extra.
+presidio = ["presidio-analyzer>=2.2", "spacy>=3.7"]
+# Host-side S3 uploader (client credentials only; never in the sandbox).
+s3 = ["boto3>=1.34"]
+# PDF text-layer extraction and OCR fallback.
+extract = ["pypdf>=4.0", "pytesseract>=0.3", "pillow>=10.0"]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["pipeline", "pipeline.storage"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "evals"]
+addopts = "-q"

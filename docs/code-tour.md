@@ -20,6 +20,23 @@ agent-pii-discovery/
 │       ├── detection_prompt.md    # the GenAI extraction prompt (versioned)
 │       ├── normalization_rules.md
 │       └── report_template.md
+├── config/
+│   ├── label_aliases.yaml         # alias table → 36 canonical types (ported verbatim)
+│   └── compliance_matrix.yaml     # 7 regimes × canonical types (ported verbatim)
+├── pipeline/                      # the deterministic pipeline (Phase 1)
+│   ├── taxonomy.py                # closed canonical type set + alias normalization
+│   ├── schemas.py                 # pydantic contract every stage speaks
+│   ├── checksum.py                # content identity + pipeline_version cache key
+│   ├── engine.py                  # PII_ENGINE resolution, fail-fast
+│   ├── structure.py               # the columnar gate
+│   ├── extract.py                 # text layer → OCR fallback → fail plainly
+│   ├── chunking.py                # stable chunk ids + document offsets
+│   ├── presidio_scan.py           # injectable Presidio wrapper
+│   ├── normalize.py               # pure roll-up, no LLM
+│   ├── compliance.py              # matrix lookup
+│   ├── scan.py                    # the three trajectories + CLI
+│   └── storage/{db.py, s3.py}     # the DB seam; hive-partitioned S3 keys
+├── tests/                         # L1 unit suite (no network, no model, no key)
 ├── evals/
 │   ├── rubrics.md                 # HARD/SOFT rubrics, floors, judge criteria
 │   ├── corpus/generate.py         # seeded fixture generator (spans recorded at composition)
@@ -31,8 +48,8 @@ agent-pii-discovery/
     └── adr/                       # 0001: Managed Agents + Arize decision
 ```
 
-`pipeline/` (sandbox scripts) and `client/` (session driver, host-side tools,
-trace forwarder) are added by Phases 1–2.
+`client/` (session driver, host-side tools, trace forwarder) is added by
+Phase 2 and wraps `pipeline/` unchanged.
 
 ## The load-bearing files
 

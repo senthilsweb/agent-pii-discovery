@@ -19,25 +19,47 @@ know where every artifact of the current phase lives.
 ```sh
 git clone https://github.com/senthilsweb/agent-pii-discovery.git
 cd agent-pii-discovery
+python3 -m venv .venv
+.venv/bin/pip install -e ".[dev]"
 ```
 
-There is nothing to `pip install` in the current phase — the repo is
-specification, agent configuration, rubrics, and the labeled fixture corpus.
-The Python package lands with Phase 1.
+Optional extras: `[presidio]` (the real NER engine — downloads a spaCy
+model), `[s3]` (boto3 uploader), `[extract]` (PDF + OCR support). None are
+needed for the test suite.
 
-## What runs today
+## Quick start
 
-The fixture corpus verifier is the first runnable code:
+Run the L1 suite (57 tests: pipeline units + corpus integrity — no network,
+no model, no key):
 
 ```sh
-python3 evals/corpus/verify.py
+.venv/bin/pytest
 ```
 
-It re-validates every fixture's character spans and prints the entity-type
-coverage table. The same checks run as pytest in `evals/test_corpus_integrity.py`.
+Scan a fixture through the deterministic pipeline:
 
-The scan pipeline, session client, and the commands documented in
-[Deployment & Integration](deployment-integration.md) arrive with Phases 1–3;
+```sh
+PII_ENGINE=presidio .venv/bin/python -m pipeline.scan \
+    evals/data/columnar_01/document.csv --user senthil
+```
+
+```json
+{
+  "scan_id": "scan_44244d7120f9",
+  "status": "skipped_out_of_scope",
+  "reason": "structured_columnar",
+  "findings": {},
+  "jurisdictions": []
+}
+```
+
+That is the columnar-reject trajectory: the structure gate fired, no scan
+tool ran, and the scan row landed in the (gitignored) DuckDB at
+`data/pii.duckdb`. Scanning prose documents with real Presidio needs the
+`[presidio]` extra; the corpus verifier is
+`python3 evals/corpus/verify.py`.
+
+The Managed Agents session path and the GenAI engine arrive with Phases 2–3;
 each phase's exit gate is in the
 [openspec tasks](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/changes/add-pii-discovery-agent/tasks.md).
 

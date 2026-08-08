@@ -1,0 +1,115 @@
+# Canonical PII/NPI taxonomy + alias table (operator-populated, editable).
+#
+# See pipeline/taxonomy.py and openspec/changes/add-pii-discovery-agent/design.md.
+#
+# One alias table normalizes labels from BOTH families of detection engine:
+#   - free-text phrasing from any GenAI model (genai_only / presidio_genai)
+#   - Presidio's native entity-type vocabulary (presidio / presidio_genai)
+#
+# Keys under `canonical_types` MUST be one of pipeline/taxonomy.py's
+# CANONICAL_ENTITY_TYPES — unrecognized keys are ignored, not invented.
+# Matching is case-insensitive; spaces/hyphens normalize to underscores.
+# Unmatched raw labels resolve to `fallback`.
+
+version: 1
+fallback: UNKNOWN
+
+canonical_types:
+  PERSON_NAME:
+    aliases: [name, full_name, person, person_name, individual_name, PERSON]
+  EMAIL_ADDRESS:
+    aliases: [email, e_mail, EMAIL_ADDRESS]
+  PHONE_NUMBER:
+    aliases: [phone, phone_num, tel, telephone, mobile, PHONE_NUMBER]
+  PHYSICAL_ADDRESS:
+    aliases: [address, home_address, mailing_address, street_address, LOCATION]
+  ZIP_POSTAL_CODE:
+    aliases: [zip, zip_code, postal_code, postcode]
+  GEOLOCATION:
+    aliases: [geolocation, gps_coordinates, lat_long, coordinates]
+  DATE_OF_BIRTH:
+    aliases: [dob, birthdate, birth_date, date_of_birth, DATE_TIME]
+  GENDER:
+    aliases: [gender, sex]
+  RACE_ETHNICITY:
+    aliases: [race, ethnicity, race_ethnicity, NRP]
+  RELIGIOUS_BELIEF:
+    aliases: [religion, religious_belief, religious_affiliation]
+  SEXUAL_ORIENTATION:
+    aliases: [sexual_orientation, sexuality]
+  POLITICAL_OPINION:
+    aliases: [political_opinion, political_affiliation]
+  GOVERNMENT_ID_SSN:
+    aliases: [ssn, social_security_number, social_security, us_ssn, US_SSN]
+  GOVERNMENT_ID_NATIONAL:
+    aliases:
+      [
+        national_id,
+        nid,
+        gov_id,
+        national_id_number,
+        aadhaar,
+        in_aadhaar,
+        IN_AADHAAR,
+        UK_NINO,
+      ]
+  GOVERNMENT_ID_PASSPORT:
+    aliases: [passport, passport_no, passport_num, US_PASSPORT, IN_PASSPORT]
+  GOVERNMENT_ID_DRIVER_LICENSE:
+    aliases:
+      [
+        drivers_license,
+        driver_license,
+        dl,
+        dln,
+        driving_license,
+        US_DRIVER_LICENSE,
+      ]
+  GOVERNMENT_ID_TAX:
+    aliases: [ein, tin, itin, tax_id, US_ITIN, IN_PAN]
+  FINANCIAL_ACCOUNT_NUMBER:
+    aliases:
+      [
+        acct,
+        acct_number,
+        account_number,
+        bank_account,
+        bank_account_number,
+        US_BANK_NUMBER,
+      ]
+  CREDIT_CARD_NUMBER:
+    aliases: [cc, credit_card, credit_card_number, creditcard, CREDIT_CARD]
+  BANK_ROUTING_NUMBER:
+    aliases: [routing_number, aba_number, sort_code]
+  IBAN:
+    aliases: [iban, bank_iban, international_bank_account, IBAN_CODE]
+  CRYPTO_WALLET_ADDRESS:
+    aliases: [crypto_wallet, crypto_address, bitcoin_address, CRYPTO]
+  HEALTH_CONDITION:
+    aliases: [health_condition, medical_condition, diagnosis, symptom]
+  HEALTH_RECORD_ID:
+    aliases: [mrn, medical_record_number, patient_id, MEDICAL_LICENSE]
+  BIOMETRIC_IDENTIFIER:
+    aliases: [biometric, fingerprint, facial_recognition_id, retina_scan]
+  GENETIC_DATA:
+    aliases: [genetic_data, dna_sequence, genome]
+  IP_ADDRESS:
+    aliases: [ip, ipaddress, ip_address, IP_ADDRESS]
+  MAC_ADDRESS:
+    aliases: [mac, hardware_address, mac_address]
+  DEVICE_IDENTIFIER:
+    aliases: [device_id, imei, udid, advertising_id]
+  LOGIN_CREDENTIAL:
+    aliases: [username, user_id, login, password, api_key, access_token]
+  EMPLOYMENT_INFO:
+    aliases: [employer, job_title, employee_id, salary]
+  EDUCATION_INFO:
+    aliases: [school, student_id, degree, gpa]
+  VEHICLE_IDENTIFIER:
+    aliases: [vin, vehicle_identification_number, license_plate, VEHICLE_ID]
+  MINOR_DATA:
+    aliases: [minor, child_data, minor_age]
+  OTHER_SENSITIVE:
+    aliases: [sensitive, other, misc_pii]
+  UNKNOWN:
+    aliases: []

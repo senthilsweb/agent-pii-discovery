@@ -4,9 +4,9 @@
 
 | Field | Value |
 |---|---|
-| Status | proposed |
-| Approved by | — |
-| Approved date | — |
+| Status | approved |
+| Approved by | Senthilnathan (senthilsweb) |
+| Approved date | 2026-08-07 |
 
 ## Build tasks
 
@@ -15,15 +15,15 @@
 - [x] proposal / design / spec / tasks
 - [x] `evals/rubrics.md` written at Inception (before any code)
 - [x] Agent + environment YAML drafted (`agent/`)
-- [ ] Labeled fixture corpus assembled (~30 synthetic docs with char-span labels)
-- [ ] Owner review → status `approved`
+- [x] Labeled fixture corpus assembled (29 synthetic docs with char-span labels; verify.py + 7 pytest green)
+- [x] Owner review → status `approved` (2026-08-07)
 
 ### Phase 1 — Core deterministic app (no GenAI, no agent)
-- [ ] `pipeline/`: checksum, extract (text layer → OCR fallback), chunk, presidio_scan, normalize, assemble
-- [ ] Port taxonomy/alias/compliance YAMLs + pydantic schemas
-- [ ] S3 uploader with `user_login`/`dt`/`sha256` partitioning
-- [ ] DuckDB schema + `db.py` seam + cache lookup on `(checksum, pipeline_version)`
-- [ ] Gate: L1 unit tests green in CI
+- [x] `pipeline/`: checksum, structure gate, extract (text layer → OCR fallback), chunk, presidio_scan, normalize, assemble + `scan.py` CLI running the three trajectories
+- [x] Port taxonomy/alias/compliance YAMLs (verbatim) + pydantic schemas
+- [x] S3 uploader with `user_login`/`dt`/`sha256` partitioning (env-gated no-op, never-throw)
+- [x] DuckDB schema + `db.py` seam + cache lookup on `(checksum, pipeline_version)`
+- [ ] Gate: L1 unit tests green in CI (57 tests green locally; awaiting first CI run)
 
 ### Phase 2 — Claude Managed Agent
 - [ ] Apply environment + agent YAML; store ids (never create in request path)
