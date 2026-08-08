@@ -65,6 +65,7 @@ span attributes before returning to normal traffic.
 | Result JSON on S3 (`results/user_login=…/…/result.json`) | Downstream systems consuming per-document results | Contract defined (PRD §8–9) |
 | DuckDB / SQL over the operational tables | Ad-hoc analysis, the flagged-review queue | Contract defined (PRD §9.2) |
 | Public parquet export (no excerpts) | Zero-infrastructure dashboards; `SELECT … FROM 'https://…/findings.parquet'` | Planned — Phase 4+ |
-| Arize AX | Quality monitoring, online evals | Phase 4–5 |
+| Trace forwarding (`python -m client.forwarder <session_id>`) | Ship any session's trace (archived included — a free API read) to Arize/OTLP/Phoenix | Working; runs automatically after each scan |
+| Arize AX | Quality monitoring, online evals | Awaiting `ARIZE_SPACE_ID`/`ARIZE_API_KEY`; verified against local Phoenix |
 
 Next: [Operations](operations.md)

@@ -74,6 +74,16 @@ def main(argv: list[str] | None = None) -> int:
         Path(args.events_out).write_text(json.dumps(
             [e.model_dump(mode="json") for e in outcome.events], indent=2, default=str))
 
+    # Phase 4: forward the trace (env-gated inside; degrades to one warning).
+    try:
+        from client.forwarder import forward_session
+        forward_session(outcome.events, scan_meta={
+            "session_id": outcome.session_id, "user_login": args.user,
+            "checksum": checksum, "cache_hit": False,
+        })
+    except Exception as exc:  # noqa: BLE001 — telemetry never fails a scan
+        print(f"forwarder warning: {exc}", file=sys.stderr)
+
     persisted = db.cache_lookup(conn, checksum, pipeline_version)
     row = conn.execute(
         "SELECT status FROM scans WHERE scan_id = ?", [manifest["scan_id"]]
