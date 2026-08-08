@@ -23,7 +23,7 @@
 - [x] Port taxonomy/alias/compliance YAMLs (verbatim) + pydantic schemas
 - [x] S3 uploader with `user_login`/`dt`/`sha256` partitioning (env-gated no-op, never-throw)
 - [x] DuckDB schema + `db.py` seam + cache lookup on `(checksum, pipeline_version)`
-- [ ] Gate: L1 unit tests green in CI (57 tests green locally; awaiting first CI run)
+- [x] Gate: L1 unit tests green in CI (57 tests; first green run 2026-08-07)
 
 ### Phase 2 — Claude Managed Agent
 - [ ] Apply environment + agent YAML; store ids (never create in request path)

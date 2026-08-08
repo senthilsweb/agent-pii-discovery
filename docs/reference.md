@@ -94,7 +94,7 @@ the runtime. See [design D2](https://github.com/senthilsweb/agent-pii-discovery/
 ## Roadmap
 
 - [x] Phase 0 — PRD, openspec change, agent control plane, rubrics, fixture corpus
-- [ ] Phase 1 — deterministic pipeline (checksum → S3 → cache → Presidio → normalize → DuckDB)
+- [x] Phase 1 — deterministic pipeline (checksum → S3 → cache → Presidio → normalize → DuckDB)
 - [ ] Phase 2 — Claude Managed Agent end to end
 - [ ] Phase 3 — GenAI path + model switching
 - [ ] Phase 4 — trace forwarder + Arize dashboards
