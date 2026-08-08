@@ -1,0 +1,64 @@
+# Claude Managed Agent — pii-orchestrator (coordinator)
+#
+# Apply ONCE (control plane), then store the returned id + version:
+#   cd agent && AGENT_ID=$(ant beta:agents create < pii-orchestrator.agent.yaml --transform id -r)
+# Update in place (new immutable version):
+#   ant beta:agents update --agent-id "$AGENT_ID" --version <N> < pii-orchestrator.agent.yaml
+# NEVER create agents in the request path — sessions reference {id, version}.
+#
+# Subagent roster: the `multiagent.agents` ids below are placeholders — create
+# the three subagents first (their YAMLs live beside this file once drafted in
+# Phase 2) and substitute their real agent ids before applying.
+
+name: pii-orchestrator
+description: >-
+  PII discovery coordinator. Plans and routes one document scan per session:
+  deterministic pipeline scripts + a single typed GenAI extraction step,
+  fanned out per model under comparison. Never analyzes documents itself.
+model:
+  id: claude-opus-5
+  effort: medium
+system: "@./system_prompt.md"
+tools:
+  - type: agent_toolset_20260401
+    default_config:
+      enabled: true
+    configs:
+      - name: web_search
+        enabled: false
+      - name: web_fetch
+        enabled: false
+  # Host-side custom tools — executed by the session client; cloud credentials
+  # never enter the sandbox.
+  - type: custom
+    name: s3_get
+    description: Fetch an uploaded document from S3 by checksum into the run workspace. Call once, at the start of a scan.
+    input_schema:
+      type: object
+      properties:
+        checksum: { type: string, description: SHA-256 of the document }
+      required: [checksum]
+  - type: custom
+    name: cache_lookup
+    description: Look up a prior result by (checksum, pipeline_version). Call before any scan; a hit means the scan is skipped entirely.
+    input_schema:
+      type: object
+      properties:
+        checksum: { type: string }
+        pipeline_version: { type: string }
+      required: [checksum, pipeline_version]
+  - type: custom
+    name: persist_result
+    description: Persist the normalized result JSON to the results database and mirror it to S3. Call exactly once, after normalization completes.
+    input_schema:
+      type: object
+      properties:
+        scan_id: { type: string }
+        result_path: { type: string, description: Path of result.json in the run workspace }
+      required: [scan_id, result_path]
+# multiagent:
+#   type: coordinator
+#   agents:
+#     - <agent_id: doc-extractor>        # claude-haiku-4-5 — isolates raw document text
+#     - <agent_id: pii-genai-scanner>    # one thread per model under comparison
+#     - <agent_id: report-assembler>     # claude-haiku-4-5 — prose from persisted JSON only

@@ -1,0 +1,7 @@
+schema: spec-driven
+name: add-pii-discovery-agent
+status: proposed
+approval:
+  reviewed_by: null
+  reviewed_date: null
+  note: Awaiting owner review of PRD v0.2 (docs/prd.md) and this change folder.

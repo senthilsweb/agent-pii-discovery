@@ -1,0 +1,16 @@
+# Sandbox environment for pii-discovery sessions.
+# Deny-by-default egress: the uploaded document is untrusted input; the
+# sandbox must not be able to exfiltrate. Package managers allowed for the
+# Presidio/OCR bootstrap; add hosts here only with a reason.
+#
+# Apply ONCE:
+#   cd agent && ENV_ID=$(ant beta:environments create < environment.yaml --transform id -r)
+
+name: pii-discovery-env
+description: Deny-by-default sandbox for scanning untrusted documents.
+config:
+  type: cloud
+  networking:
+    type: limited
+    allow_package_managers: true
+    allowed_hosts: []
