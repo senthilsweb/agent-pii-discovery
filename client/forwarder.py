@@ -18,6 +18,15 @@ Span mapping:
     agent.tool_use / tool_result → TOOL child (duration from the result event)
     agent.custom_tool_use        → TOOL child (host-side tools)
     persist_result payload       → per-type finding counts on the root span
+
+Cache hits are a second, purpose-built path (`forward_cache_hit`), not a
+degenerate case of the above: a cache hit never creates a session, so there
+is no event stream to map. Fixed 2026-08-08 — previously a cache hit
+produced zero telemetry anywhere (no trace, no DB row), which made "cache
+hit rate" (PRD §10.3) uncomputable. `forward_cache_hit` emits one minimal
+root span with the same name (`pii_scan.session`) and a `cache_hit=true`
+attribute, so a single dashboard panel can count both fresh scans and cache
+hits uniformly by filtering/grouping on that one attribute.
 """
 
 from __future__ import annotations
@@ -97,6 +106,47 @@ def _provider(exporters: list):
     for exp in exporters:
         provider.add_span_processor(BatchSpanProcessor(exp))
     return provider
+
+
+def forward_cache_hit(request_id: str, scan_id: str, checksum: str,
+                      user_login: str, requested_at: datetime,
+                      provider=None) -> dict:
+    """Emit one minimal span for a cache-hit request — no session, no event
+    stream to map, so this does not go through forward_session().
+
+    Same degrade-to-warning contract: no backend configured = one warning,
+    zeroed summary, never an exception. Returns the same shape as
+    forward_session() (`span_count`/`root_span_id`/`root_trace_id`) so
+    callers can treat both paths uniformly.
+    """
+    empty = {"span_count": 0, "root_span_id": None, "root_trace_id": None}
+    own_provider = provider is None
+    if own_provider:
+        exporters = build_exporters()
+        if not exporters:
+            log.warning("forwarder: no telemetry backend configured — "
+                        "cache-hit trace skipped (request %s)", request_id)
+            return empty
+        provider = _provider(exporters)
+    tracer = provider.get_tracer("pii.forwarder")
+
+    t = _ns(requested_at) or 0
+    span = tracer.start_span("pii_scan.session", start_time=t)
+    ctx = span.get_span_context()
+    span.set_attribute("openinference.span.kind", "AGENT")
+    span.set_attribute("cache_hit", True)
+    span.set_attribute("request_id", request_id)
+    span.set_attribute("scan_id", scan_id)
+    span.set_attribute("checksum", checksum)
+    span.set_attribute("user_login", user_login)
+    span.end(end_time=t)
+
+    if own_provider:
+        provider.force_flush()
+        provider.shutdown()
+    return {"span_count": 1,
+            "root_span_id": format(ctx.span_id, "016x"),
+            "root_trace_id": format(ctx.trace_id, "032x")}
 
 
 # --- the mapping -----------------------------------------------------------

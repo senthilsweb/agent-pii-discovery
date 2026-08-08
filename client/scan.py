@@ -55,7 +55,21 @@ def main(argv: list[str] | None = None) -> int:
     conn = db.connect()
     cached = db.cache_lookup(conn, checksum, pipeline_version)
     if cached is not None:
-        print(json.dumps({"cache_hit": True, "scan_id": cached.run.scan_id,
+        # Fixed 2026-08-08 (real gap against PRD §10.3): a cache hit used to
+        # leave zero trace anywhere — no session, no forwarder call, no new
+        # DB row. Now it gets a durable record and a minimal trace, so
+        # "cache hit rate" is actually computable, without creating a
+        # session or spending a token.
+        request_id = f"req_{uuid.uuid4().hex[:12]}"
+        db.record_cache_hit(conn, request_id, cached.run.scan_id, checksum, args.user)
+        try:
+            from client.forwarder import forward_cache_hit
+            forward_cache_hit(request_id, cached.run.scan_id, checksum, args.user,
+                              datetime.now(timezone.utc))
+        except Exception as exc:  # noqa: BLE001 — telemetry never fails a scan
+            print(f"forwarder warning: {exc}", file=sys.stderr)
+        print(json.dumps({"cache_hit": True, "request_id": request_id,
+                          "scan_id": cached.run.scan_id,
                           "status": cached.document.processing_status}, indent=2))
         return 0
 

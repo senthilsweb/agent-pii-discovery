@@ -21,6 +21,7 @@ path):
 | `agent.tool_use` / `tool_result` | TOOL span — name, duration, status |
 | Thread events | One sub-trace per subagent, tagged with its model |
 | Whole session | AGENT root span — `session_id`, `scan_id`, `checksum`, `user_login`, `pii.engine`, `cache_hit`, `pii.findings.<TYPE>` (count), `pii.sensitivity.<TYPE>` (grade — no value, no excerpt) |
+| Cache hit (no session) | Same span name (`pii_scan.session`), emitted directly by `client/scan.py` via `forward_cache_hit()` — `cache_hit=true`, `request_id`, `scan_id` (the original scan that served it), `checksum`, `user_login`. No LLM/TOOL children (nothing ran). |
 
 Production spans carry counts, types, tokens, and ids — never document text
 (`TELEMETRY_RECORD_IO=false`). Each Managed Agents session also has a live
@@ -34,7 +35,7 @@ Console trace view, useful during development.
 | Judge score distribution R1–R6 | Live | Judged locally, pushed to Arize ([Evals § live judge](evals.md#the-live-judge-l4)) |
 | Drift vs frozen offline baseline (PSI / KS) | Live monitor | Arize |
 | Flagged-for-review rate | Live monitor | Arize → `eval_scores` table (target < 2%) |
-| Cache hit rate | Live | `cache_hit` trace attribute |
+| Cache hit rate | Live | `cache_hit` trace attribute, or `db.cache_hit_rate()` locally — doesn't depend on Arize being configured |
 | Cost/doc, tokens/doc, latency p95 | Live monitor | Arize (from `model_usage`) |
 | Per-type finding-volume mix | Live | Cheap no-ground-truth drift signal |
 

@@ -65,7 +65,10 @@ The orchestrator may follow exactly one of three paths per session
 (enumerated in `agent/system_prompt.md`; any other sequence is a defect and a
 HARD eval failure):
 
-1. **Cache hit** — `cache_lookup` answers; no document fetch, no scan.
+1. **Cache hit** — `cache_lookup` answers; no document fetch, no scan, no
+   session created at all. Still recorded: a `cache_hits` row in DuckDB and a
+   minimal trace (no LLM/tool children, since nothing ran) — so cache hit
+   rate is measurable without needing a session to exist.
 2. **Columnar reject** — the structure gate classifies the file as columnar;
    result is `skipped_out_of_scope`; no extraction, chunking, or detection.
 3. **Full scan** — the client uploads the document via the Files API and

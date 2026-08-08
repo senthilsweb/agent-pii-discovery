@@ -2,6 +2,8 @@
 
 from datetime import date
 
+import pytest
+
 from pipeline.schemas import (
     ComplianceImpact, DocumentMeta, DocumentResult, NormalizedFinding, RunInfo,
 )
@@ -138,3 +140,33 @@ def test_s3_client_defaults_to_virtual_style_without_the_flag(monkeypatch):
     monkeypatch.delenv("OBJECT_STORE_FORCE_PATH_STYLE", raising=False)
     client = s3._client()
     assert (client.meta.config.s3 or {}).get("addressing_style") != "path"
+
+
+def test_record_cache_hit_and_rate():
+    conn = db.connect(":memory:")
+    r = _result(scan_id="s_original")
+    db.upsert_document(conn, r, None)
+    db.insert_scan(conn, r)
+
+    db.record_cache_hit(conn, "req_1", "s_original", r.checksum, "senthil")
+    db.record_cache_hit(conn, "req_2", "s_original", r.checksum, "senthil")
+
+    rate = db.cache_hit_rate(conn)
+    assert rate == {"cache_hits": 2, "fresh_scans": 1, "total_requests": 3,
+                    "hit_rate": round(2 / 3, 4)}
+
+
+def test_cache_hit_rate_zero_requests_does_not_divide_by_zero():
+    conn = db.connect(":memory:")
+    assert db.cache_hit_rate(conn) == {"cache_hits": 0, "fresh_scans": 0,
+                                       "total_requests": 0, "hit_rate": 0.0}
+
+
+def test_cache_hit_request_id_is_unique_key():
+    conn = db.connect(":memory:")
+    r = _result(scan_id="s1")
+    db.upsert_document(conn, r, None)
+    db.insert_scan(conn, r)
+    db.record_cache_hit(conn, "req_dup", "s1", r.checksum, "u")
+    with pytest.raises(Exception):  # duplicate primary key
+        db.record_cache_hit(conn, "req_dup", "s1", r.checksum, "u")

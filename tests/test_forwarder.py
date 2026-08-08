@@ -4,7 +4,9 @@ import json
 
 import pytest
 
-from client.forwarder import build_exporters, forward_session
+from datetime import datetime, timezone
+
+from client.forwarder import build_exporters, forward_cache_hit, forward_session
 
 
 @pytest.fixture
@@ -108,6 +110,32 @@ def test_no_backend_is_a_warning_not_a_crash(monkeypatch, caplog):
         monkeypatch.delenv(var, raising=False)
     assert build_exporters() == []
     summary = forward_session(EVENTS)  # logs one warning, returns a zeroed summary
+    assert summary == {"span_count": 0, "root_span_id": None, "root_trace_id": None}
+
+
+def test_cache_hit_span(in_memory_provider):
+    provider, exporter = in_memory_provider
+    summary = forward_cache_hit("req_1", "scan_original", "c" * 64, "senthil",
+                                datetime.now(timezone.utc), provider=provider)
+    provider.force_flush()
+    (span,) = exporter.get_finished_spans()
+
+    assert summary["span_count"] == 1
+    assert span.name == "pii_scan.session"  # same name as a real scan — one uniform dashboard dimension
+    assert span.attributes["openinference.span.kind"] == "AGENT"
+    assert span.attributes["cache_hit"] is True
+    assert span.attributes["request_id"] == "req_1"
+    assert span.attributes["scan_id"] == "scan_original"
+    assert span.attributes["user_login"] == "senthil"
+    assert format(span.get_span_context().span_id, "016x") == summary["root_span_id"]
+
+
+def test_cache_hit_no_backend_is_a_warning_not_a_crash(monkeypatch):
+    for var in ("ARIZE_SPACE_ID", "ARIZE_API_KEY",
+                "OTEL_EXPORTER_OTLP_ENDPOINT", "PHOENIX_COLLECTOR_ENDPOINT"):
+        monkeypatch.delenv(var, raising=False)
+    summary = forward_cache_hit("req_1", "scan_x", "c" * 64, "u",
+                                datetime.now(timezone.utc))
     assert summary == {"span_count": 0, "root_span_id": None, "root_trace_id": None}
 
 

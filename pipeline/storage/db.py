@@ -66,6 +66,17 @@ _DDL = [
         explanation     TEXT,
         evaluated_at    TIMESTAMP NOT NULL
     )""",
+    # A cache hit never runs a session and never writes a new `scans` row
+    # (the cached result is just re-returned) — without this table, a cache
+    # hit was invisible everywhere: no trace, no DB record, nothing to
+    # compute "cache hit rate" from (PRD §10.3). Fixed 2026-08-08.
+    """CREATE TABLE IF NOT EXISTS cache_hits (
+        request_id      TEXT PRIMARY KEY,
+        scan_id         TEXT NOT NULL,
+        checksum        TEXT NOT NULL,
+        user_login      TEXT NOT NULL,
+        requested_at    TIMESTAMP NOT NULL
+    )""",
 ]
 
 
@@ -176,3 +187,29 @@ def unjudged_scans(conn: Any, limit: int = 100) -> list[tuple[str, str | None]]:
            ORDER BY started_at LIMIT ?""",
         [limit],
     ).fetchall()
+
+
+def record_cache_hit(conn: Any, request_id: str, scan_id: str,
+                     checksum: str, user_login: str) -> None:
+    """Durable record of one cache-hit request — the source of truth for
+    cache hit rate, independent of whether the trace forwarder is configured."""
+    conn.execute(
+        "INSERT INTO cache_hits VALUES (?, ?, ?, ?, ?)",
+        [request_id, scan_id, checksum, user_login, _now()],
+    )
+
+
+def cache_hit_rate(conn: Any, since: datetime | None = None) -> dict:
+    """Cache hits vs. total requests (hits + processed scans) — computable
+    locally without Arize, and what the forwarded trace attribute mirrors."""
+    since = since or datetime(1970, 1, 1)
+    hits = conn.execute(
+        "SELECT COUNT(*) FROM cache_hits WHERE requested_at >= ?", [since]
+    ).fetchone()[0]
+    scans = conn.execute(
+        "SELECT COUNT(*) FROM scans WHERE status = 'processed' AND started_at >= ?",
+        [since],
+    ).fetchone()[0]
+    total = hits + scans
+    return {"cache_hits": hits, "fresh_scans": scans, "total_requests": total,
+            "hit_rate": round(hits / total, 4) if total else 0.0}
