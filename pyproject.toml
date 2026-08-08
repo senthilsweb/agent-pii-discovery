@@ -21,7 +21,13 @@ telemetry = ["opentelemetry-sdk>=1.25", "opentelemetry-exporter-otlp-proto-http>
 # Push job dependency (evals/judge/push.py) — lazy-imported, not needed for
 # the local judge (evals/judge/runner.py) or L1 tests.
 evaluate = ["arize>=7.0", "pandas>=2.0"]
-dev = ["pytest>=8.0", "opentelemetry-sdk>=1.25", "pandas>=2.0", "boto3>=1.34"]
+dev = [
+    "pytest>=8.0",
+    "opentelemetry-sdk>=1.25",
+    "opentelemetry-exporter-otlp-proto-http>=1.25",
+    "pandas>=2.0",
+    "boto3>=1.34",
+]
 
 [build-system]
 requires = ["setuptools>=68"]
