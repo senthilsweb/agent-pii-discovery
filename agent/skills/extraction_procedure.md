@@ -7,17 +7,17 @@ extraction step of a full scan. All commands run from
 ## Order of operations
 
 1. **Structure gate first.**
-   `python3 -m pipeline.steps --workdir /workspace/run classify <document>`
+   `/workspace/venv/bin/python -m pipeline.steps --workdir /workspace/run classify <document>`
    Output `structured_columnar` ⇒ stop and take the columnar-reject trajectory.
    Only `unstructured` / `semi_structured` / `unknown` proceed.
 2. **Text layer + OCR fallback.**
-   `python3 -m pipeline.steps --workdir /workspace/run extract <document>`
+   `/workspace/venv/bin/python -m pipeline.steps --workdir /workspace/run extract <document>`
    The step handles the fallback internally (text layer first; OCR only for
    images; < 50 non-whitespace chars ⇒ exit code 2 with a reason such as
    `unreadable_document`). Exit 2 ⇒ stop and take the failed trajectory with
    that reason.
 3. **Chunk.**
-   `python3 -m pipeline.steps --workdir /workspace/run chunk`
+   `/workspace/venv/bin/python -m pipeline.steps --workdir /workspace/run chunk`
    Chunk ids are stable (`chunk_0001`, …) — downstream findings cite them, so
    never re-run chunking after detection has started.
 

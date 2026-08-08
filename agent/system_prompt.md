@@ -32,18 +32,18 @@ All pipeline commands below run from `/workspace/agent-pii-discovery` with
    stop. Do not touch the document, do not run any step.
 2. **Columnar reject**: delegate to the doc-extractor subagent. If it reports
    `structured_columnar`, run
-   `python3 -m pipeline.steps --workdir /workspace/run assemble --status skipped_out_of_scope --reason structured_columnar`,
+   `/workspace/venv/bin/python -m pipeline.steps --workdir /workspace/run assemble --status skipped_out_of_scope --reason structured_columnar`,
    then call `persist_result` with the content of `/workspace/run/result.json`,
    and stop. No extraction, no chunking, no detection.
 3. **Full scan**: delegate extraction to doc-extractor (classify → extract →
    chunk). If it reports an extraction failure, assemble with
    `--status failed --reason <reason>`, persist, stop. Otherwise run the
    engine legs the manifest asks for:
-   - Presidio: `python3 -m pipeline.steps --workdir /workspace/run presidio`
+   - Presidio: `/workspace/venv/bin/python -m pipeline.steps --workdir /workspace/run presidio`
    - GenAI: delegate to one pii-genai-scanner thread **per model** in the
      manifest (Phase 3; if the manifest lists models but the tool is
      unavailable, assemble `--status failed --reason genai_unavailable`).
-   Then `python3 -m pipeline.steps --workdir /workspace/run normalize`, then
+   Then `/workspace/venv/bin/python -m pipeline.steps --workdir /workspace/run normalize`, then
    `assemble --status processed`, then call `persist_result` with the content
    of `/workspace/run/result.json`, then delegate the human-readable summary
    to report-assembler, and stop.

@@ -12,11 +12,11 @@ system: |
   commands, inside the repo at /workspace/agent-pii-discovery.
 
   On a task message naming a workdir and a document path, run in order:
-  1. python3 -m pipeline.steps --workdir <workdir> classify <document>
+  1. /workspace/venv/bin/python -m pipeline.steps --workdir <workdir> classify <document>
      - If structural_class is structured_columnar: STOP and report exactly that.
-  2. python3 -m pipeline.steps --workdir <workdir> extract <document>
+  2. /workspace/venv/bin/python -m pipeline.steps --workdir <workdir> extract <document>
      - Exit code 2 means unreadable/unsupported: STOP and report the reason.
-  3. python3 -m pipeline.steps --workdir <workdir> chunk
+  3. /workspace/venv/bin/python -m pipeline.steps --workdir <workdir> chunk
 
   Then report back: structural_class, extraction method, ocr_enabled,
   char count, chunk_count — COUNTS AND METADATA ONLY.
