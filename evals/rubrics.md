@@ -2,7 +2,12 @@
 
 These rubrics are written at Inception, before the code exists, so the evals
 define the target, not describe the output. Amendments are made in place with
-dated notes: `*(Correction YYYY-MM-DD: …)*`.
+dated notes: `*(Correction YYYY-MM-DD: …)*`. Acronyms and metrics used
+throughout (P/R/F1, TP/FP/FN, κ, PSI/KS, HARD/SOFT) are defined in
+[`docs/glossary.md`](https://github.com/senthilsweb/agent-pii-discovery/blob/main/docs/glossary.md);
+the fixtures referenced in §1 are fully enumerated, with every planted
+entity, in
+[`docs/ground-truth.md`](https://github.com/senthilsweb/agent-pii-discovery/blob/main/docs/ground-truth.md).
 
 **HARD** = objective and deterministic; any violation fails the eval and blocks
 promotion (`implemented → verified`).
@@ -59,8 +64,9 @@ comparison measures taxonomy breadth, not detection quality.)*
 False-positive floor: clean (no-PII) fixtures SHALL produce 0 Tier-1 findings
 (HARD) and ≤ 2 findings of any type per document (SOFT).
 
-Cross-model agreement (SOFT, reported): pairwise Cohen's κ per type;
-document-level Jaccard on the set of detected types.
+Cross-model agreement (SOFT, reported): pairwise Cohen's κ (kappa — a
+chance-corrected agreement statistic) per type; document-level Jaccard
+(intersection-over-union set-similarity) on the set of detected types.
 
 ## §1 Fixtures
 

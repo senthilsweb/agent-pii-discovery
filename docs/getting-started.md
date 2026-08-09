@@ -23,9 +23,10 @@ python3 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
 ```
 
-Optional extras: `[presidio]` (the real NER engine — downloads a spaCy
-model), `[s3]` (boto3 uploader), `[extract]` (PDF + OCR support). None are
-needed for the test suite.
+Optional extras: `[presidio]` (the real NER — named entity recognition —
+engine, downloads a spaCy model), `[s3]` (boto3 uploader), `[extract]` (PDF +
+OCR — optical character recognition — support). None are needed for the test
+suite. Any acronym on this page is defined in the [Glossary](glossary.md).
 
 ## Quick start
 
@@ -78,6 +79,10 @@ PII_ENGINE=genai_only MODEL_PII_EXTRACTOR=claude-haiku-4-5 \
   "jurisdictions": ["CCPA_CPRA", "DPDP_INDIA", "GDPR", "LGPD", "PDPL_ARGENTINA", "PIPEDA"]
 }
 ```
+
+Each jurisdiction code is one of the seven compliance regimes this project
+maps findings against — spelled out in the
+[Glossary § Compliance / regulatory regimes](glossary.md#compliance-regulatory-regimes).
 
 The Managed Agents session path and the GenAI engine arrive with Phases 2–3;
 each phase's exit gate is in the

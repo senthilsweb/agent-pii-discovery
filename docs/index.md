@@ -37,7 +37,8 @@ millisecond to the request path.
 - Normalizes every engine's output into one canonical 36-type entity schema,
   so cross-model comparison needs no re-scan.
 - Maps findings to seven compliance regimes (GDPR, CCPA/CPRA, DPDP, PDPL-AR,
-  HIPAA, LGPD, PIPEDA) by pure table lookup.
+  HIPAA, LGPD, PIPEDA — spelled out in the
+  [Glossary](glossary.md#compliance-regulatory-regimes)) by pure table lookup.
 - Caches by content checksum + pipeline version: the same bytes are never
   scanned twice under the same configuration.
 - Traces every run — tool calls, subagent threads, token usage — into Arize

@@ -1,5 +1,7 @@
 # Reference
 
+Unfamiliar acronym on this page? Check the [Glossary](glossary.md).
+
 ## Configuration reference
 
 The complete variable table lives on its own page: [Configuration](configuration.md).
@@ -17,7 +19,7 @@ finding, after normalization:
 | `chunk_ids` | string[] | Where in the document |
 | `sample_excerpts` | string[] (≤5) | Verbatim substrings of the source (grounding invariant) |
 | `span` | {chunk_id, start, end} | Char offsets where available |
-| `normalized_value` | string? | Canonical form where computable (lowercased email, E.164 phone) |
+| `normalized_value` | string? | Canonical form where computable (lowercased email, E.164 — the international phone-number standard format, e.g. `+14155552671` — phone) |
 | `source_engines` | ("presidio"\|"genai")[] | Which paths found it |
 | `source_models` | string[] | Which models (GenAI findings) |
 | `max_confidence` | 0–1 | Max across merged raw findings |
@@ -32,7 +34,8 @@ Document envelope: file metadata, `structural_class`, `processing_status`,
 
 Four ANSI-portable tables — `documents` (by checksum), `scans` (by run,
 joined to traces via `session_id`), `findings` (one row per rolled-up
-finding), `eval_scores` (written back from Arize). Full DDL: PRD §9.2.
+finding), `eval_scores` (written back from Arize). Full DDL (data definition
+language — the `CREATE TABLE` schema statements): PRD §9.2.
 
 ## Status values
 

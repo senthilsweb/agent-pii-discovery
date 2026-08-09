@@ -2,7 +2,7 @@
 
 At the end you will know how each part of the system deploys — the agent
 control plane, the client, and this docs site — and how other systems read
-its output.
+its output. Unfamiliar acronym? Check the [Glossary](glossary.md).
 
 ## Configuration
 
@@ -33,8 +33,9 @@ recorded here as the contract the phase implements.
 ### Client (v1: local process)
 
 The upload CLI/API, host-side tools, and trace forwarder run as one Python
-process on the operator's machine in v1. Where it runs permanently (VPS,
-serverless per upload) is an open question tracked in PRD §15.
+process on the operator's machine in v1. Where it runs permanently (a VPS —
+virtual private server, serverless per upload) is an open question tracked in
+PRD §15.
 
 ### Docs site (this wiki)
 
@@ -51,7 +52,7 @@ docs-scoped path filter means a docs commit never triggers anything else.
 | Detection prompt (`agent/skills/detection_prompt.md`) | Redeploy client env | `pipeline_version` changes → cache misses on all documents, by design |
 | Extraction model (`MODEL_PII_EXTRACTOR`) | Env change only | Same cache invalidation as above |
 | Taxonomy / alias YAML | Version bump in the file header | Same cache invalidation; re-baseline offline evals before trusting live drift monitors |
-| DB engine (DuckDB → Postgres/MySQL) | Swap the DSN behind `db.py` | Schema is ANSI-portable; no DDL change expected |
+| DB engine (DuckDB → Postgres/MySQL) | Swap the DSN (connection string) behind `db.py` | Schema is ANSI-portable; no DDL (data definition language — schema-defining SQL) change expected |
 
 Post-deploy verification: run one fixture through the full path, confirm the
 result JSON validates, and confirm the trace appears in Arize with correct

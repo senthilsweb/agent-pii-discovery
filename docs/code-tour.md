@@ -2,6 +2,7 @@
 
 At the end you will know where everything lives, which files carry the
 project's invariants, and where the intent behind the code is recorded.
+Unfamiliar acronym? Check the [Glossary](glossary.md).
 
 ## The tree
 

@@ -2,6 +2,10 @@
 
 At the end you will know the four evaluation layers, what the labeled corpus
 contains, and how "correct" is defined before any pipeline code exists.
+Every acronym below (P/R/F1, HARD/SOFT, L1–L4, R1–R6, PSI/KS, and the rest)
+is defined in the [Glossary](glossary.md); the fixtures referenced throughout
+are fully enumerated, with every planted entity, in the
+[Ground Truth Corpus](ground-truth.md).
 
 The eval harness is the point of this project, not an afterthought: rubrics
 were written at Inception (before the code), every phase exits through an
@@ -18,12 +22,14 @@ via dated in-place corrections.
 | L1 — Unit tests | pytest over deterministic code: normalizer, alias table, compliance matrix, checksum, cache key, corpus integrity | No network, no model, no key | Every push |
 | L2 — Offline agent evals | Real Managed Agents sessions over the labeled corpus; asserts P/R/F1 vs labels, trajectory, schema, grounding, injection resistance — on artifacts, never prose | Labeled corpus + live session | `implemented` |
 | L3 — Judge calibration | The rubric judges scored against human-labeled findings; ≥ 90% agreement per criterion before a judge runs live | Calibration set | `verified`, judge deploy |
-| L4 — Live regression | Arize online-eval tasks over sampled production traces: judge rubric R1–R6, drift (PSI/KS vs frozen offline baseline), cost monitors | Production traffic | Continuous |
+| L4 — Live regression | Arize online-eval tasks over sampled production traces: judge rubric R1–R6, drift (PSI/KS — Population Stability Index / Kolmogorov–Smirnov — vs frozen offline baseline), cost monitors | Production traffic | Continuous |
 
 ## The labeled corpus
 
 29 synthetic fixtures under `evals/data/`, one directory per fixture with the
-document and a `labels.json` sidecar. Generated deterministically by
+document and a `labels.json` sidecar. Every fixture, every planted entity,
+and the full coverage matrix are published on the
+[Ground Truth Corpus](ground-truth.md) page — this section summarizes it. Generated deterministically by
 `evals/corpus/generate.py` (fixed seed; running it twice produces
 byte-identical output), and — the load-bearing property — **char spans are
 recorded at composition time**, never recovered by searching the text
