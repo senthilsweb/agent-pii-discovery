@@ -38,7 +38,7 @@ variable.
 | `OBJECT_STORE_ACCESS_KEY_ID` / `OBJECT_STORE_SECRET_ACCESS_KEY` | yes | Held by the client only; never enter the sandbox. |
 | `OBJECT_STORE_ENDPOINT` | no | S3-compatible endpoint. Self-hosted MinIO in this deployment (ADR 0003) — AWS S3 needs no override. |
 | `OBJECT_STORE_FORCE_PATH_STYLE` | no | `true` for MinIO and most self-hosted S3-compatible stores — they reject virtual-hosted-style requests. Leave unset for AWS S3. |
-| `PII_DB_PATH` | no | DuckDB file path (default `data/pii.duckdb`). Production swaps this for a Postgres/MySQL DSN behind the same seam. |
+| `PII_DB_PATH` | no | DuckDB file path (default `data/pii.duckdb`). Production swaps this for a Postgres/MySQL DSN (data source name — the connection string; see [Glossary](glossary.md)) behind the same seam. |
 
 ## Observability
 
@@ -46,7 +46,7 @@ variable.
 |---|---|---|
 | `ARIZE_SPACE_ID` / `ARIZE_API_KEY` | yes for live eval | Arize AX ingest and the judge-verdict push. Missing = forwarder/push degrade to one logged warning, scans unaffected. |
 | `ARIZE_PROJECT_NAME` | no | Default `agent-pii-discovery`. Must match the project traces land in. |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` / `OTEL_EXPORTER_OTLP_HEADERS` | no | Generic OTLP fan-out target. |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` / `OTEL_EXPORTER_OTLP_HEADERS` | no | Generic OTLP (OpenTelemetry Protocol) fan-out target. |
 | `PHOENIX_COLLECTOR_ENDPOINT` | no | Dev-only local Phoenix second export. |
 | `TELEMETRY_RECORD_IO` | no | `false` in production — prompts/completions (document text) never leave for the trace backend. |
 | `MODEL_JUDGE` | yes for LLM judges | Judge model for R2/R3/R5/R6, falls back to `MODEL`. Must differ from the extractor under test — see [Evals](evals.md). |
@@ -60,7 +60,8 @@ variable.
 
 ## Cache semantics
 
-There is no cache TTL to configure. The cache key is
+There is no cache TTL (time to live — a fixed expiry duration; see
+[Glossary](glossary.md)) to configure. The cache key is
 `(checksum, pipeline_version)`, and `pipeline_version` hashes the engine, the
 extraction model, the detection prompt, and the taxonomy version — changing
 any of them *is* the invalidation.

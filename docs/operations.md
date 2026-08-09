@@ -1,7 +1,8 @@
 # Operations
 
 At the end you will know what is observable in production, what it costs, and
-what to do when something breaks.
+what to do when something breaks. Unfamiliar acronym? Check the
+[Glossary](glossary.md).
 
 ## Logging
 
@@ -33,7 +34,7 @@ Console trace view, useful during development.
 |---|---|---|
 | P/R/F1 per canonical type, per engine, per model | Offline gate | CI (L2), floors in [rubrics §0](https://github.com/senthilsweb/agent-pii-discovery/blob/main/evals/rubrics.md) |
 | Judge score distribution R1–R6 | Live | Judged locally, pushed to Arize ([Evals § live judge](evals.md#the-live-judge-l4)) |
-| Drift vs frozen offline baseline (PSI / KS) | Live monitor | Arize |
+| Drift vs frozen offline baseline (PSI — Population Stability Index / KS — Kolmogorov–Smirnov test) | Live monitor | Arize |
 | Flagged-for-review rate | Live monitor | Arize → `eval_scores` table (target < 2%) |
 | Cache hit rate | Live | `cache_hit` trace attribute, or `db.cache_hit_rate()` locally — doesn't depend on Arize being configured |
 | Cost/doc, tokens/doc, latency p95 | Live monitor | Arize (from `model_usage`) |

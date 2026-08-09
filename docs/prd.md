@@ -490,8 +490,9 @@ Each phase exits through its eval gate (Section 11).
 - **Phase 5 — Live eval.** Judge calibration (L3), Arize online-eval tasks + drift
   and cost monitors + flagged queue + `eval_scores` sync. Gate: L3 ≥ 90% agreement;
   one week of live scores flowing on real traffic.
-- **Phase 6 — Cheat-sheet card.** Reshape into the 3–4 page A4 card (intent /
-  design / operations), same format as the interview cheat sheet.
+- **Phase 6 — Cheat-sheet card.** Reshape into a 3–4 page A4 reference card
+  (intent / design / operations) — a wall-poster-style summary of the system,
+  not a slide deck.
 
 ---
 

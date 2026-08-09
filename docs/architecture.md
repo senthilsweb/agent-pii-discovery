@@ -56,8 +56,11 @@ harness change unchanged.
 | Extraction model | env-resolved (`MODEL_PII_EXTRACTOR`) | The one generative step; Claude / GPT-class / DeepSeek |
 | Deterministic engine | Microsoft Presidio + regex | The no-LLM baseline path |
 | Client | Python 3.12 | Session driver, host-side tools, forwarder, eval harness |
-| Storage | S3-compatible (hive partitions) + DuckDB (ANSI-portable) | Uploads/results; scans/findings/eval scores. Self-hosted MinIO in this deployment, [ADR 0003](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/adr/0003-minio-object-storage.md) |
-| Observability | OpenInference/OTel → Arize AX | Traces, online evals, drift + cost monitors |
+| Storage | S3-compatible (hive partitions) + DuckDB (ANSI-portable — see [Glossary](glossary.md)) | Uploads/results; scans/findings/eval scores. Self-hosted MinIO in this deployment, [ADR 0003](https://github.com/senthilsweb/agent-pii-discovery/blob/main/openspec/adr/0003-minio-object-storage.md) |
+| Observability | OpenInference / OTel (OpenTelemetry) → Arize AX | Traces, online evals, drift + cost monitors |
+
+Every acronym on this page (and elsewhere in these docs) is defined in the
+[Glossary](glossary.md).
 
 ## Agent flow — the three legal trajectories
 

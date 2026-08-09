@@ -39,9 +39,11 @@ nav:
   - Architecture: architecture.md
   - Configuration: configuration.md
   - Evals: evals.md
+  - Ground Truth Corpus: ground-truth.md
   - Deployment & Integration: deployment-integration.md
   - Operations: operations.md
   - Reference: reference.md
+  - Glossary: glossary.md
 
 markdown_extensions:
   - admonition
